@@ -1,0 +1,26 @@
+schema_version = "1.0.0"
+
+id          = "texture_mixer"
+version     = "0.1.0"
+name        = "Texture Mixer"
+tagline     = "Layer-based PBR mixing and texture management"
+maintainer  = "Candra Agung Prasetyo <yuyevon777@gmail.com>"
+type        = "add-on"
+license     = ["SPDX:GPL-3.0-or-later"]          
+copyright   = ["2025-2026 Candra Agung Prasetyo"]
+permissions = []
+blender_version_min = "5.0.0"
+
+[blender]
+platforms   = ["windows-x64", "macosx-arm64", "linux-x64"]
+version     = ">=5.0.0"
+
+[addon]
+category    = "Material"
+description = "Layer based PBR texture mixing tool with node group generation and texture slot management."
+tags        = ["material", "texture", "pbr", "layer", "shader"]
+
+[links]
+homepage    = "https://github.com/CandraAP/Texture_Mixer"
+
+# [dependencies]
