@@ -21,6 +21,6 @@ description = "Layer based PBR texture mixing tool with node group generation an
 tags        = ["material", "texture", "pbr", "layer", "shader"]
 
 [links]
-homepage    = "https://github.com/CandraAP/Texture_Mixer"
+homepage    = "https://github.com/CandraAP/texture_mixer"
 
 # [dependencies]
