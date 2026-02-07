@@ -84,17 +84,20 @@ TM_Resolution_Preset_Items = [
     ('R_2048',"2048 x 2048", "Set default resolution to 2048 x 2048 pixels"),
     # ('R_4096',"4096 x 4096", "Set default resolution to 4096 x 4096 pixels"),   # <-- heavy, Approx 2+ GB of RAM per layer!
     # ('R_8192',"8192 x 8192", "Set default resolution to 8192 x 8192 pixels"),   # <-- Super heavy, Approx 6+ GB of RAM per layer!
+    # more resolution presets...
 ]
 
 TM_Node_Type_Items = [
     ('LAYER_PAINTABLE', "Paintable Layer", "Layer for direct painting/editing"),
     ('LAYER_PRESERVED', "Preserved Layer", "Layer using a procedural/fill value"),
     ('GROUP', "Group", "Container for nested layers"),
+    # more layer types...
 ]
 
 TM_Mask_Type_Items = [    
     ('MASK_PAINTABLE', "Paintable Mask", "Mask layer for direct painting/editing"),
     ('MASK_PRESERVED', "Preserved Mask", "Mask layer using a procedural/fill value"),
+    # more mask types...
 ]
 
 TM_Blending_Mode_Items = [
@@ -121,12 +124,6 @@ TM_Blending_Mode_Items = [
     ('SATURATION', "Saturation", "Intensity: Applies Saturation of Current Layer to Hue and Luminance of Lower Layer"),
     ('COLOR', "Color", "Full Tint: Applies Hue and Saturation of Current Layer to Luminance of Lower Layer"),
     ('VALUE', "Value", "Luminosity: Applies Brightness of Current Layer to Hue and Saturation of Lower Layer"),
-]
-
-TM_Brush_Mode_Items = [
-    ('TM_BRUSH_PAINT', "Paint Brush", "")
-    # ('TM_BRUSH_ERASER', "Eraser Brush", "")
-    # add more
 ]
 #endregion [ENUMS]
 
@@ -359,7 +356,6 @@ TM_DT_Export_Texture_Metadata = {
 }
 
 TM_DT_Export_File_Type = {
-     # 16 is 'Half Float', 32 is 'Full Float'
     'PNG': {
         'item': ('PNG', "PNG", "Lossless compression. Supports Alpha."),
         'extension': '.png',
@@ -505,61 +501,11 @@ TM_DT_Channels_Metadata = {
 #endregion [DATA]
 
 #region [Property Logic]
-def TextureMixer_Property_Get_Active_Object(context)-> bpy.types.Object | None:
-    """TextureMixer_Property_Get_Active_Object"""
-    debug_id = "TextureMixer_Property_Get_Active_Object"
-
-    try:
-        active_object = getattr(context, 'active_object', None)
-
-        if not active_object:
-            Debug.LogWarning("No active object found", debug_id)
-            return None
-
-        if active_object.type != 'MESH':
-            Debug.LogWarning("Active object is not a mesh", debug_id)
-            return None
-        
-        if active_object.data is None:
-            Debug.LogWarning("Active mesh data is None", debug_id)
-            return None
-
-        if active_object.mode not in {'OBJECT', 'TEXTURE_PAINT'}:
-            Debug.LogWarning(f"Mode {active_object.mode} is invalid", debug_id)
-            return None
-        
-        return active_object
-    
-    except Exception as e:
-        Debug.LogError(f"{str(e)}", debug_id)
-        return None    
-
 def TextureMixer_Property_Get_Active_Manager(context):
     """TextureMixer_Property_Get_Active_Manager"""
     debug_id = "TextureMixer_Property_Get_Active_Manager"
-    stamp_id = Addon_Data.m_addon_id_stamp
 
     try:
-        active_object = TextureMixer_Property_Get_Active_Object(context)
-        if not active_object:
-            return None
-
-        material_slots = active_object.material_slots
-        if material_slots:
-            if len(material_slots) == 0:
-                return None
-            if material_slots[0].material is None: 
-                return None
-            if material_slots[0].material.get(stamp_id) is None:
-                return None
-        else:
-            return None
-
-        active_material_id = material_slots[0].material.get(stamp_id)
-        if not active_material_id:
-            Debug.LogWarning("No active material ID found", debug_id)
-            return None
-
         user_data = context.scene.TM_User_Data
         if not user_data:
             Debug.LogError("Failed to find user data.", debug_id)
@@ -571,17 +517,12 @@ def TextureMixer_Property_Get_Active_Manager(context):
             Debug.LogWarning("No Layer Managers exist", debug_id)
             return None
 
-        active_manager = None
         for manager in manager_collection:
-            if manager.m_enable and manager.m_managed_material_id == active_material_id:
-                active_manager = manager
-                break
-
-        if not active_manager:
-            Debug.LogError("Failed to find active manager.", debug_id)
-            return None
-
-        return active_manager    
+            if manager.m_enable: 
+                return manager
+            
+        Debug.LogWarning("No active Layer Manager found", debug_id)
+        return None
     
     except Exception as e:
         Debug.LogError(f"{str(e)}", debug_id)
@@ -1052,14 +993,18 @@ class TM_Brush_Data(PropertyGroup):
     m_brush_texture_alpha       : PointerProperty(type=bpy.types.Texture,name="Brush Texture Alpha")
     m_brush_texture_image       : PointerProperty(type=bpy.types.Texture,name="Brush Texture Image")
 
+    m_brush_option_skip_channel     : BoolProperty(name="Skip Channel", default=True)
+    m_brush_option_enable_smoothing : BoolProperty(name="Enable Smoothing", default=True)
+
     #region [Experimental]
-    m_brush_mode                : EnumProperty(name="Brush Mode", items=TM_Brush_Mode_Items, default='TM_BRUSH_PAINT')  
+    m_brush_mode                : EnumProperty(name="Brush Mode", items=[
+                                    ('TM_BRUSH_PAINT', "Paint Brush", "")
+                                    # ('TM_BRUSH_ERASER', "Eraser Brush", "")
+                                    # add more
+                                ], default='TM_BRUSH_PAINT')  
     m_brush_falloff_resolution  : IntProperty(name="Falloff Resolution", default=256, min=32, soft_max=1024)
     m_brush_falloff_hardness    : FloatProperty(name="Falloff Hardness", default=0.5, min=0.0, soft_max=1.0)
     #endregion [Experimental]
-
-    m_brush_option_skip_channel     : BoolProperty(name="Skip Channel", default=True)
-    m_brush_option_enable_smoothing : BoolProperty(name="Enable Smoothing", default=True)
 
 #endregion [Brush]
 
