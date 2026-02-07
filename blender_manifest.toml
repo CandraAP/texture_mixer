@@ -9,11 +9,11 @@ type        = "add-on"
 license     = ["SPDX:GPL-3.0-or-later"]          
 copyright   = ["2025-2026 Candra Agung Prasetyo"]
 permissions = []
-blender_version_min = "5.0.0"
+blender_version_min = "4.5.0"
 
-[blender]
-platforms   = ["windows-x64", "macosx-arm64", "linux-x64"]
-version     = ">=5.0.0"
+# [blender]
+# platforms   = ["windows-x64", "macosx-arm64", "linux-x64"]
+# version     = ">=4.5.0"
 
 [addon]
 category    = "Material"

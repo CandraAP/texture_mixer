@@ -40,7 +40,7 @@ bl_info = {
     "name": "Texture Mixer",
     "author": "Candra Agung Prasetyo",
     "description": "Layer-based PBR mixing and texture management",
-    "blender": (5, 0, 0),
+    "blender": (4, 5, 0),
     "version": (0, 1, 0),
     "location": "View3D > Sidebar > Texture Mixer",
     "warning": "",
