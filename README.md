@@ -1,11 +1,21 @@
-# Texture Mixer
-
-<p align="left">
-  <a href="https://www.patreon.com/c/candraap"><img src="https://img.shields.io/badge/Patreon-F96854?style=for-the-badge&logo=patreon&logoColor=white" /></a>
-  <a href="https://ko-fi.com/candraap"><img src="https://img.shields.io/badge/Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColor=white" /></a>
+<p align="center">
+  <img width="35%" height="35%" src="https://github.com/user-attachments/assets/09d68518-2e1b-4b98-9777-4ec821684d2a" />
 </p>
 
-Texture Mixer is a layer-based texturing toolset for Blender. It automates the creation of complex node groups to allow for multi-channel painting and mask management.
+# <p align="center">Texture Mixer</p>
+
+<p align="center">
+  <a href="https://www.patreon.com/c/candraap"><img src="https://img.shields.io/badge/Patreon-F96854?style=for-the-badge&logo=patreon&logoColor=white" /></a>
+  <a href="https://ko-fi.com/candraap"><img src="https://img.shields.io/badge/Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColor=white" /></a>
+  <img src="https://img.shields.io/badge/Blender-5.0+-orange?style=for-the-badge&logo=blender&logoColor=white" />
+</p>
+
+<p align="center">
+  <strong>A non-destructive, layer-based texturing toolset for Blender.</strong><br>
+  Automate complex node groups for multi-channel painting and professional mask management.
+</p>
+
+---
 
 > [!WARNING]
 > **Experimental Status:** This addon is currently in active development (Alpha). All features, node structures, and workflows are subject to change in future updates. Please use with caution on production files and always keep backups!
@@ -31,6 +41,22 @@ Texture Mixer is a layer-based texturing toolset for Blender. It automates the c
 - **Add Layers:** Choose between **Paint Layers** (manual painting) or **Fill Layers** (procedural/texture inputs).
 - **Painting:** Enter the custom Multi-Channel mode to affect multiple PBR slots in a single stroke.
 - **Baking:** Use the Export tab to flatten your layers into final maps.
+
+---
+
+## ⚖️ Disclaimer & License
+
+### **Disclaimer**
+**Texture Mixer** is currently in **Alpha**. While every effort is made to ensure stability, this software is provided "as-is," without warranty of any kind. 
+- **Use at your own risk.**
+- The author is not responsible for any data loss, file corruption, or hardware damage resulting from the use of this addon.
+- **Always keep backups** of your `.blend` files before initializing Texture Mixer on a production model.
+
+### **License**
+This project is licensed under the **GNU General Public License v3.0 (GPL-3.0)**. 
+- You are free to use, modify, and distribute this software.
+- Any derivative works must also be licensed under the GPL-3.0.
+- See the [LICENSE](LICENSE) file for the full legal text.
 
 ---
 
