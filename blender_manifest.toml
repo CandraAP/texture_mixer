@@ -22,5 +22,8 @@ tags        = ["material", "texture", "pbr", "layer", "shader"]
 
 [links]
 homepage    = "https://github.com/CandraAP/texture_mixer"
+issues      = "https://github.com/CandraAP/texture_mixer/issues"
+documentation = "https://github.com/CandraAP/texture_mixer/blob/main/README.md"
+
 
 # [dependencies]

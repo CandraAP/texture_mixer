@@ -73,7 +73,7 @@ class Addon_Data():
 TM_BSDF_Shader_Type_Items = [
     ('ShaderNodeBsdfPrincipled', "Principled BSDF", "Use Principled BSDF shader"),
     ('ShaderNodeBsdfDiffuse', "Diffuse BSDF", "Use Diffuse BSDF shader"),
-    # Jejeli shader liane nang kene, hmm ketoke butuh nyuport SSS, ndelok ndelok sek, wagu nek muk support Cycle tok (nganggo emisi?, kustom shader? tapi repot leh maintenis)
+    # support another shader types in the future...
 ]
 
 TM_Resolution_Preset_Items = [
@@ -82,27 +82,22 @@ TM_Resolution_Preset_Items = [
     ('R_512',"512 x 512", "Set default resolution to 512 x 512 pixels"),
     ('R_1024',"1024 x 1024", "Set default resolution to 1024 x 1024 pixels"),
     ('R_2048',"2048 x 2048", "Set default resolution to 2048 x 2048 pixels"),
-    # ('R_4096',"4096 x 4096", "Set default resolution to 4096 x 4096 pixels"),   # <-- abot bingit, Approx 2+ GB of RAM per layer!
-    # ('R_8192',"8192 x 8192", "Set default resolution to 8192 x 8192 pixels"),   # <-- Super uabot bingit, Approx 6+ GB of RAM per layer!
-    # Tambahi neh resolusi nang kene, ndelok ndelok optimasi ram ro vram sek, po export nang drive dadekke cache wae yo?, gampang sih nerapkene, tapi dadi ra portable blend file e
+    # ('R_4096',"4096 x 4096", "Set default resolution to 4096 x 4096 pixels"),   # <-- heavy, Approx 2+ GB of RAM per layer!
+    # ('R_8192',"8192 x 8192", "Set default resolution to 8192 x 8192 pixels"),   # <-- Super heavy, Approx 6+ GB of RAM per layer!
 ]
 
 TM_Node_Type_Items = [
     ('LAYER_PAINTABLE', "Paintable Layer", "Layer for direct painting/editing"),
     ('LAYER_PRESERVED', "Preserved Layer", "Layer using a procedural/fill value"),
     ('GROUP', "Group", "Container for nested layers"),
-    # Tripalanar fill layer? hmm ndelok sikon sek (dadekke siji nang 'LAYER_PRESERVED' lewat opsi? luih simpel?)
 ]
 
 TM_Mask_Type_Items = [    
     ('MASK_PAINTABLE', "Paintable Mask", "Mask layer for direct painting/editing"),
     ('MASK_PRESERVED', "Preserved Mask", "Mask layer using a procedural/fill value"),
-    # ('MASK_COLORID', "Color Id Mask", "Mask based on a material/color ID map"), # ijek gojak gajek meh stand alone po dadi siji ro procedural (nek nang tools liane ki stand alone sih, hmm)
-    # Kustom procedural mask? ketok e iso support, system sementara iso nompo apapun asal output e ireng puteh, next road map
 ]
 
 TM_Blending_Mode_Items = [
-    # Blender 5.0.1, Sementara muk semene anane
     ('MIX', "Mix", "Standard Alpha: Current Layer replaces Lower Layer based on Factor"),
 
     ('ADD', "Add", "Brightness Sum: Adds Current Layer values to Lower Layer; useful for glows"),
@@ -404,7 +399,6 @@ TM_DT_Export_File_Type = {
 }
 
 TM_DT_Channels_Based_On_Shader = {  
-    # Seduluran ro TM_BSDF_Shader_Type_Items! singkron ke nek diupdate!
     'ShaderNodeBsdfPrincipled'  : {'Base Color', 'Normal', 'Bump', 'Metallic', 'Roughness', 'Emission'},
     'ShaderNodeBsdfDiffuse'     : {'Base Color', 'Normal', 'Bump'},      
 }
@@ -441,12 +435,6 @@ TM_DT_Custom_Node_Library = {
 }
 
 TM_DT_Channels_Metadata = {
-    # Relasi yang harus diupdate: 
-    # - Layer sockets disconnect/reconnect
-    # - TM_DT_Channels_Based_On_Shader
-    # - TM_Channel_Container + individu channel
-    # - TM_Node_Manager (Gate Way)
-    # - TM_DT_Custom_Node_Library (Custom Shader Library nang Blend file)
     'Base Color':{
         'default_name'              : 'Base Color',
         'default_init'              : 'basecolor',
@@ -799,7 +787,6 @@ def tm_texture_export_sync_channel_selection(self, context, slot_prefix):
         setattr(self, f"m_slot_{slot_prefix}_channel", 'None')
 
 def tm_texture_export_name_update(self, context):
-    # 1. Get the manager that owns this collection
     active_manager = TextureMixer_Property_Get_Active_Manager(context)
     if not active_manager:
         return
@@ -1018,7 +1005,7 @@ class TM_Node_Manager(PropertyGroup):
     m_shader_node_system_composer_id    : StringProperty(name="System Composer Node Id")  
     m_shader_node_system_default_id     : StringProperty(name="System Default Nod Id")  
 
-    # List channel yang aktif
+    # active channels
     m_channel_basecolor_enable          : BoolProperty(name="Channel Base Color Enable", default=True, update=lambda self, context: tm_node_manager_update_m_channel_enable(self, context, "Enable Base Color", self.m_channel_basecolor_enable))  
     m_channel_metallic_enable           : BoolProperty(name="Channel Metallic Enable", default=True, update=lambda self, context: tm_node_manager_update_m_channel_enable(self, context, "Enable Metallic", self.m_channel_metallic_enable))  
     m_channel_roughness_enable          : BoolProperty(name="Channel Roughness Enable", default=True, update=lambda self, context: tm_node_manager_update_m_channel_enable(self, context, "Enable Roughness", self.m_channel_roughness_enable))  
