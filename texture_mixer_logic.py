@@ -407,6 +407,8 @@ def TM_Logic_Layer_Create_New(context, layer_type: str) -> tm_property.TM_Node|N
     host_material = TM_Logic_Material_Get_By_Id(active_manager.m_managed_material_id)
     if not host_material:
         return None
+    
+    channels_metadata = tm_property.TM_DT_Channels_Metadata
 
     layer_system = active_manager.m_managed_tm_node_collection
 
@@ -416,6 +418,13 @@ def TM_Logic_Layer_Create_New(context, layer_type: str) -> tm_property.TM_Node|N
     new_layer.m_id = new_id
     new_layer.m_group_id = ""
     new_layer.m_tm_node_manager_id = active_manager.m_id
+
+    for channel_name, channel_data in channels_metadata.items():
+        init = channel_data['default_init']
+        if hasattr(new_layer.m_channel, f"m_channel_{init}"):
+            prop = getattr(new_layer.m_channel, f"m_channel_{init}", None)
+            if prop:
+                prop.m_name = channel_name
 
     new_layer.m_type = layer_type
     if new_layer.m_type == 'LAYER_PAINTABLE':

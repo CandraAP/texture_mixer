@@ -441,9 +441,10 @@ TM_DT_Channels_Metadata = {
         'default_color_space'       : 'sRGB',
         'default_channel_rgba'      : {'r', 'g', 'b', 'a'},        
         'channel_color_neutral'     : (0.0, 0.0, 0.0, 1.0),
-        'default_blank_canvas'      : ((0.0,0.0,0.0,0.0), True, True), # Color (4), Use Alpha, Use Buffer (False:8bit|True:32bit)
-        'default_fill_texture'      : ((1.0,1.0,1.0,1.0), True, False), # Color (4), Use Alpha, Use Buffer (False:8bit|True:32bit)
-        'default_system_sockets'    : [ ("Color", "Base Color Value"), ("Alpha", "Base Color Alpha")] # System Texture to System Layer sockets
+        'default_blank_canvas'      : ((0.0,0.0,0.0,0.0), True, True), 
+        'default_fill_texture'      : ((1.0,1.0,1.0,1.0), True, False), 
+        'default_system_sockets'    : [ ("Color", "Base Color Value"), ("Alpha", "Base Color Alpha")],
+        'default_blend_node'        : 'BASE_COLOR_BLEND'
     },
     'Roughness':{
         'default_name'              : 'Roughness',
@@ -453,7 +454,8 @@ TM_DT_Channels_Metadata = {
         'channel_color_neutral'     : (0.5, 0.5, 0.5, 1.0),
         'default_blank_canvas'      : ((0.5,0.5,0.5,1.0), False, True),
         'default_fill_texture'      : ((0.5,0.5,0.5,1.0), False, False),
-        'default_system_sockets'    : [ ("Color", "Roughness Value")]
+        'default_system_sockets'    : [ ("Color", "Roughness Value")],
+        'default_blend_node'        : 'ROUGHNESS_BLEND'
     },
     'Metallic':{
         'default_name'              : 'Metallic',
@@ -463,7 +465,8 @@ TM_DT_Channels_Metadata = {
         'channel_color_neutral'     : (0.5,0.5,0.5, 1.0),
         'default_blank_canvas'      : ((0.5,0.5,0.5,1.0), False, True),
         'default_fill_texture'      : ((0.5,0.5,0.5,1.0), False, False),
-        'default_system_sockets'    : [ ("Color", "Metallic Value")]
+        'default_system_sockets'    : [ ("Color", "Metallic Value")],
+        'default_blend_node'        : 'METALLIC_BLEND'
     },
     'Normal':{
         'default_name'              : 'Normal',
@@ -473,7 +476,8 @@ TM_DT_Channels_Metadata = {
         'channel_color_neutral'     : (0.5, 0.5, 1.0, 1.0),
         'default_blank_canvas'      : ((0.5,0.5,1.0,1.0), False, True),
         'default_fill_texture'      : ((0.5,0.5,1.0,1.0), False, True),
-        'default_system_sockets'    : [ ("Color", "Normal Value")]
+        'default_system_sockets'    : [ ("Color", "Normal Value")],
+        'default_blend_node'        : 'NORMAL_BLEND'
     },
     'Bump':{
         'default_name'              : 'Bump',
@@ -483,7 +487,8 @@ TM_DT_Channels_Metadata = {
         'channel_color_neutral'     : (0.5, 0.5, 0.5, 1.0),
         'default_blank_canvas'      : ((0.5,0.5,0.5,1.0), False, True),
         'default_fill_texture'      : ((0.5,0.5,0.5,1.0), False, False),
-        'default_system_sockets'    : [ ("Color", "Bump Value")] 
+        'default_system_sockets'    : [ ("Color", "Bump Value")] ,
+        'default_blend_node'        : 'BUMP_BLEND'
     },
     'Emission':{
         'default_name'              : 'Emission',
@@ -493,7 +498,8 @@ TM_DT_Channels_Metadata = {
         'channel_color_neutral'     : (0.0, 0.0, 0.0, 1.0),
         'default_blank_canvas'      : ((0.0,0.0,0.0,1.0), False, True),
         'default_fill_texture'      : ((0.0,0.0,0.0,1.0), False, False),
-        'default_system_sockets'    : [ ("Color", "Emission Value")]
+        'default_system_sockets'    : [ ("Color", "Emission Value")],
+        'default_blend_node'        : 'EMISSION_BLEND'
     },
 }
 #endregion [DATA]
@@ -686,62 +692,33 @@ class TM_Texture(PropertyGroup):
 #endregion [TM_Texture]
 
 #region [Channels]
-class TM_Channel_BaseColor(PropertyGroup):
-    """TM_Channel_BaseColor"""    
-    m_tm_texture_id: StringProperty(name="TM Texture Id")  
+class TM_Channel_Data(PropertyGroup):
+    """TM_Channel_Data"""
+    m_name : StringProperty(name="Channel Name")
 
-    m_blending_mode: EnumProperty(name="Blending Mode", items=TM_Blending_Mode_Items, default='MIX', update=lambda self, context: tm_all_channels_update_m_blending_mode(self, context))  
-
-    m_shader_node_blending_node_name: StringProperty(name="Blending Node Name", default="BASE_COLOR_BLEND")   
-
-class TM_Channel_Normal(PropertyGroup):
-    """TM_Channel_Normal"""    
     m_tm_texture_id: StringProperty(name="TM Texture Id")  
     
-    m_blending_mode: EnumProperty(name="Blending Mode", items=TM_Blending_Mode_Items, default='MIX', update=lambda self, context: tm_all_channels_update_m_blending_mode(self, context))  
+    m_blending_mode: EnumProperty(name="Blending Mode", items=TM_Blending_Mode_Items, default='MIX', update=lambda self, context: tm_channel_data_update_m_blending_mode(self, context))
 
-    m_shader_node_blending_node_name: StringProperty(name="Blending Node Name", default="NORMAL_BLEND")   
+def tm_channel_data_update_m_blending_mode(self, context):
+    if not self.m_name:
+        return
 
-class TM_Channel_Bump(PropertyGroup):
-    """TM_Channel_Bump"""    
-    m_tm_texture_id: StringProperty(name="TM Texture Id")  
-    
-    m_blending_mode: EnumProperty(name="Blending Mode", items=TM_Blending_Mode_Items, default='MIX', update=lambda self, context: tm_all_channels_update_m_blending_mode(self, context))  
-
-    m_shader_node_blending_node_name: StringProperty(name="Blending Node Name", default="BUMP_BLEND")     
-
-class TM_Channel_Metallic(PropertyGroup):
-    """TM_Channel_Metallic"""
-    m_tm_texture_id: StringProperty(name="TM Texture Id")  
-    
-    m_blending_mode: EnumProperty(name="Blending Mode", items=TM_Blending_Mode_Items, default='MIX', update=lambda self, context: tm_all_channels_update_m_blending_mode(self, context))  
-
-    m_shader_node_blending_node_name: StringProperty(name="Blending Node Name", default="METALLIC_BLEND")   
-
-class TM_Channel_Roughness(PropertyGroup):
-    """TM_Channel_Roughness"""
-    m_tm_texture_id: StringProperty(name="TM Texture Id")  
-    
-    m_blending_mode: EnumProperty(name="Blending Mode", items=TM_Blending_Mode_Items, default='MIX', update=lambda self, context: tm_all_channels_update_m_blending_mode(self, context))  
-
-    m_shader_node_blending_node_name: StringProperty(name="Blending Node Name", default="ROUGHNESS_BLEND")   
-
-class TM_Channel_Emission(PropertyGroup):
-    """TM_Channel_Emission"""
-    m_tm_texture_id: StringProperty(name="TM Texture Id")  
-    
-    m_blending_mode: EnumProperty(name="Blending Mode", items=TM_Blending_Mode_Items, default='MIX', update=lambda self, context: tm_all_channels_update_m_blending_mode(self, context))  
-
-    m_shader_node_blending_node_name: StringProperty(name="Blending Node Name", default="EMISSION_BLEND")    
-# Add more possible layers...
-
-def tm_all_channels_update_m_blending_mode(self, context):
     active_layer = TextureMixer_Property_Get_Active_Layer(context)
     if not active_layer:
         return
+    
     layer_node_name = active_layer.m_shader_node_system_layer_id
 
-    blend_node = TextureMixer_Property_Get_ShaderNode_With_Id(context, layer_node_name, self.m_shader_node_blending_node_name)
+    channel_metadata = TM_DT_Channels_Metadata.get(self.m_name)
+    if not channel_metadata:
+        return
+    
+    self_node_name = channel_metadata.get('default_blend_node')
+    if not self_node_name:
+        return
+
+    blend_node = TextureMixer_Property_Get_ShaderNode_With_Id(context, layer_node_name, self_node_name)
     if not blend_node:
         return
 
@@ -752,12 +729,12 @@ def tm_all_channels_update_m_blending_mode(self, context):
     
 class TM_Channel_Container(PropertyGroup):
     """TM_Channel_Container"""
-    m_channel_basecolor: PointerProperty(type=TM_Channel_BaseColor, name="Base Color Channel")  
-    m_channel_normal: PointerProperty(type=TM_Channel_Normal, name="Normal Channel")   
-    m_channel_bump: PointerProperty(type=TM_Channel_Bump, name="Bump Channel")  
-    m_channel_metallic: PointerProperty(type=TM_Channel_Metallic, name="Metallic Channel")  
-    m_channel_roughness: PointerProperty(type=TM_Channel_Roughness, name="Roughness Channel")  
-    m_channel_emission: PointerProperty(type=TM_Channel_Emission, name="Emission Channel")  
+    m_channel_basecolor: PointerProperty(type=TM_Channel_Data, name="Base Color Channel")  
+    m_channel_normal: PointerProperty(type=TM_Channel_Data, name="Normal Channel")   
+    m_channel_bump: PointerProperty(type=TM_Channel_Data, name="Bump Channel")  
+    m_channel_metallic: PointerProperty(type=TM_Channel_Data, name="Metallic Channel")  
+    m_channel_roughness: PointerProperty(type=TM_Channel_Data, name="Roughness Channel")  
+    m_channel_emission: PointerProperty(type=TM_Channel_Data, name="Emission Channel")  
 #endregion [Channels]
 
 #region [Texture Export]
@@ -1157,12 +1134,7 @@ included_classes = (
     #--------------------------------------------- 
     TM_Texture,
     #---------------------------------------------
-    TM_Channel_BaseColor,
-    TM_Channel_Normal,
-    TM_Channel_Bump,
-    TM_Channel_Metallic,
-    TM_Channel_Roughness,
-    TM_Channel_Emission,
+    TM_Channel_Data,
     TM_Channel_Container,
     #---------------------------------------------
     TM_Texture_Export,
