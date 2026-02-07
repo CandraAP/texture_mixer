@@ -44,7 +44,8 @@ bl_info = {
     "version": (0, 1, 0),
     "location": "View3D > Sidebar > Texture Mixer",
     "warning": "",
-    "category": "Generic",
+    "doc_url": "https://github.com/CandraAP/texture_mixer",
+    "category": "Material",
 }
 #-------------------------------------------------
 #endregion [BLENDER INFO]
