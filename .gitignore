@@ -1,5 +1,6 @@
 # CAP Internal Development Folder
 .do_not_include_me/
+texture_mixer_project_builder_*.bat
 
 # Blender temporary files
 *.blend1

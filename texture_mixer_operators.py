@@ -1732,10 +1732,7 @@ class TM_OT_Layer_Paint_Blender_Single_Channel(bpy.types.Operator):
         
         context.scene.TM_User_Data.m_ui_tm_paint_mode_enable = False
         if self.m_active_object:
-            self.m_active_object = None
-        
-        # if context.active_object and context.active_object.mode != 'OBJECT':
-        #     bpy.ops.object.mode_set(mode='OBJECT')
+            self.m_active_object = None        
 
 def OP_Layer_Paint_Activate_Canvas(self, context, index, active_material):
     user_data               = context.scene.TM_User_Data
