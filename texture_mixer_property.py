@@ -47,7 +47,7 @@ class Addon_Data():
     m_addon_name                    = "Texture Mixer"
     m_addon_descriptions            = "Texturing tools addon for Blender"
     m_addon_version                 = "0.1.0"
-    m_addon_status                  = "-BETA"
+    m_addon_status                  = "-ALPHA"
     m_package_id                    = __package__.replace(".", "_")
     #-------------------------------------------------
     m_addon_id_stamp                = f"{__package__.lower()}_property_id"
