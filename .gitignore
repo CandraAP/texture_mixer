@@ -1,0 +1,17 @@
+# CAP Internal Development Folder
+.do_not_include_me/
+
+# Blender temporary files
+*.blend1
+*.blend2
+*.blend3
+__pycache__/
+*.pyc
+
+# VS Code & OS garbage
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+*.zip
