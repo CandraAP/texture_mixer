@@ -68,10 +68,11 @@ class TM_PT_UserInfo(bpy.types.Panel):
             if user_data.m_ui_show_support:                
                 col = box_support.column(align=True)
                 col.scale_y = 1.0
-                # col.operator("wm.url_open", text="SuperHive",                   icon='HEART').url = "..."
+                # col.operator("wm.url_open", text="SuperHive", icon='HEART').url = "..."
+                # col.separator(factor=0.5)
+                col.operator("wm.url_open", text="Become a Patron (Patreon)",   icon='HEART').url = "https://www.patreon.com/c/candraap"  
+                col.separator(factor=0.5)              
                 col.operator("wm.url_open", text="Buy me a coffee (Ko-Fi)",     icon='HEART').url = "https://ko-fi.com/candraap"
-                col.separator(factor=0.5)
-                col.operator("wm.url_open", text="Become a Patron (Patreon)",   icon='HEART').url = "https://www.patreon.com/c/candraap"                
 
         box_logo = main_layout.box()
         row_logo = box_logo.row(align=True)
