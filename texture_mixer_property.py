@@ -438,7 +438,6 @@ TM_DT_Channels_Metadata = {
         'default_channel_rgba'      : {'r', 'g', 'b', 'a'},        
         'channel_color_neutral'     : (0.0, 0.0, 0.0, 1.0),
         'default_blank_canvas'      : ((0.0,0.0,0.0,0.0), True, True), 
-        'default_fill_texture'      : ((1.0,1.0,1.0,1.0), True, False), 
         'default_system_sockets'    : [ ("Color", "Base Color Value"), ("Alpha", "Base Color Alpha")],
         'default_blend_node'        : 'BASE_COLOR_BLEND'
     },
@@ -449,7 +448,6 @@ TM_DT_Channels_Metadata = {
         'default_channel_rgba'      : {'r'},  
         'channel_color_neutral'     : (0.5, 0.5, 0.5, 1.0),
         'default_blank_canvas'      : ((0.5,0.5,0.5,1.0), False, True),
-        'default_fill_texture'      : ((0.5,0.5,0.5,1.0), False, False),
         'default_system_sockets'    : [ ("Color", "Roughness Value")],
         'default_blend_node'        : 'ROUGHNESS_BLEND'
     },
@@ -460,7 +458,6 @@ TM_DT_Channels_Metadata = {
         'default_channel_rgba'      : {'r'},  
         'channel_color_neutral'     : (0.5,0.5,0.5, 1.0),
         'default_blank_canvas'      : ((0.5,0.5,0.5,1.0), False, True),
-        'default_fill_texture'      : ((0.5,0.5,0.5,1.0), False, False),
         'default_system_sockets'    : [ ("Color", "Metallic Value")],
         'default_blend_node'        : 'METALLIC_BLEND'
     },
@@ -471,7 +468,6 @@ TM_DT_Channels_Metadata = {
         'default_channel_rgba'      : {'r', 'g', 'b'},  
         'channel_color_neutral'     : (0.5, 0.5, 1.0, 1.0),
         'default_blank_canvas'      : ((0.5,0.5,1.0,1.0), False, True),
-        'default_fill_texture'      : ((0.5,0.5,1.0,1.0), False, True),
         'default_system_sockets'    : [ ("Color", "Normal Value")],
         'default_blend_node'        : 'NORMAL_BLEND'
     },
@@ -482,7 +478,6 @@ TM_DT_Channels_Metadata = {
         'default_channel_rgba'      : {'r'},  
         'channel_color_neutral'     : (0.5, 0.5, 0.5, 1.0),
         'default_blank_canvas'      : ((0.5,0.5,0.5,1.0), False, True),
-        'default_fill_texture'      : ((0.5,0.5,0.5,1.0), False, False),
         'default_system_sockets'    : [ ("Color", "Bump Value")] ,
         'default_blend_node'        : 'BUMP_BLEND'
     },
@@ -493,7 +488,6 @@ TM_DT_Channels_Metadata = {
         'default_channel_rgba'      : {'r', 'g', 'b'},  
         'channel_color_neutral'     : (0.0, 0.0, 0.0, 1.0),
         'default_blank_canvas'      : ((0.0,0.0,0.0,1.0), False, True),
-        'default_fill_texture'      : ((0.0,0.0,0.0,1.0), False, False),
         'default_system_sockets'    : [ ("Color", "Emission Value")],
         'default_blend_node'        : 'EMISSION_BLEND'
     },

@@ -548,12 +548,12 @@ def TM_Logic_Layer_Paint_Get_Blank_Canvas(context, target_manager_id: str, targe
     preserve_texture_image                              = TM_Logic_Image_Generate_New(context, resolution_preserve_texture, channel_texture_data[0], channel_texture_data[1], channel_texture_data[2], channel_color_space)
     virtual_texture_image                               = TM_Logic_Image_Generate_New(context, resolution_virtual_texture, channel_texture_data[0], channel_texture_data[1], channel_texture_data[2], channel_color_space)
     
-    # if channel_color_space == 'Non-Color':
-    #     preserve_texture_image.alpha_mode               = 'CHANNEL_PACKED'
-    #     virtual_texture_image.alpha_mode                = 'CHANNEL_PACKED'
-    # else:
-    preserve_texture_image.alpha_mode                   = 'STRAIGHT'
-    virtual_texture_image.alpha_mode                    = 'STRAIGHT'
+    if channel_color_space == 'Non-Color':
+        preserve_texture_image.alpha_mode               = 'CHANNEL_PACKED'
+        virtual_texture_image.alpha_mode                = 'CHANNEL_PACKED'
+    else:
+        preserve_texture_image.alpha_mode               = 'STRAIGHT'
+        virtual_texture_image.alpha_mode                = 'STRAIGHT'
 
     preserve_texture_image.update()
     virtual_texture_image.update()
@@ -1185,17 +1185,25 @@ def TM_Logic_Mask_Create_New(context, mask_type: str, white_baground: bool = Tru
         resolution_virtual_texture                          = TM_Logic_Utility_Get_Resolution_From_Preset(active_manager.m_virtual_resolution)
         
         if white_baground:
-            preserve_texture_image                          = TM_Logic_Image_Generate_New(context, resolution_preserve_texture, (1.0,1.0,1.0,1.0), True, True, 'Non-Color')
-            virtual_texture_shader_node.image               = TM_Logic_Image_Generate_New(context, resolution_virtual_texture, (1.0,1.0,1.0,1.0), True, True, 'Non-Color')
+            preserve_texture_image                          = TM_Logic_Image_Generate_New(context, resolution_preserve_texture, (1.0,1.0,1.0,1.0), False, True, 'Non-Color')
+            virtual_texture_image                           = TM_Logic_Image_Generate_New(context, resolution_virtual_texture, (1.0,1.0,1.0,1.0), False, True, 'Non-Color')
         else:
-            preserve_texture_image                          = TM_Logic_Image_Generate_New(context, resolution_preserve_texture, (0.0,0.0,0.0,1.0), True, True, 'Non-Color')
-            virtual_texture_shader_node.image               = TM_Logic_Image_Generate_New(context, resolution_virtual_texture, (0.0,0.0,0.0,1.0), True, True, 'Non-Color')
-
-        virtual_texture_shader_node.interpolation           = 'Linear'
+            preserve_texture_image                          = TM_Logic_Image_Generate_New(context, resolution_preserve_texture, (0.0,0.0,0.0,1.0), False, True, 'Non-Color')
+            virtual_texture_image                           = TM_Logic_Image_Generate_New(context, resolution_virtual_texture, (0.0,0.0,0.0,1.0), False, True, 'Non-Color')
         
         if hasattr(preserve_texture_image, 'alpha_mode'):
-            preserve_texture_image.alpha_mode               = 'STRAIGHT'
-            virtual_texture_shader_node.image.alpha_mode    = 'STRAIGHT'
+            preserve_texture_image.alpha_mode               = 'CHANNEL_PACKED'
+        if hasattr(virtual_texture_image, 'alpha_mode'):
+            virtual_texture_image.alpha_mode                = 'CHANNEL_PACKED'
+
+        preserve_texture_image.update()
+        virtual_texture_image.update()
+
+        preserve_texture_image.pack()
+        virtual_texture_image.pack()
+
+        virtual_texture_shader_node.image                   = virtual_texture_image
+        virtual_texture_shader_node.interpolation           = 'Linear'
 
         tm_texture.m_preserved_texture_size                 = resolution_preserve_texture
         tm_texture.m_virtual_texture_size                   = resolution_virtual_texture
