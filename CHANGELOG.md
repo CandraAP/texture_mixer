@@ -16,6 +16,7 @@
 - None (Initial Release).
 
 ### Known Issues
+- Layer Performance: Stacking a high number of layers (typically 8+) will significantly degrade viewport performance. This is due to the nature of "live" shader node composition.
 - Viewport Rendering: Viewport textures may occasionally appear black. Frequent saving of the .blend file is recommended.
 - Multi Channels Painting: 'Smear' and 'Mask' brushes are currently unsupported in Multi-Channel mode. 
 - Multi Channels Painting: Multi-Channel painting is currently limited to Solid Colors, texture-based sampling and stencils are planned for a future update.
