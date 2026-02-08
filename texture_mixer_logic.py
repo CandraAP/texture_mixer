@@ -2003,10 +2003,10 @@ def TM_Logic_Image_Copy(source_texture: bpy.types.Image, target_texture: bpy.typ
     source_texture_width, source_texture_height = source_texture.size
 
     temp_copy = None
-    
+
     if (source_texture_width, source_texture_height) == ( target_texture_width, target_texture_height):
         pixel_count = target_texture_width * target_texture_height * 4
-        buffer = array.array('f', [0.0]) * pixel_count
+        buffer = np.empty(pixel_count, dtype=np.float32)
 
         source_texture.pixels.foreach_get(buffer)
         target_texture.pixels.foreach_set(buffer)
