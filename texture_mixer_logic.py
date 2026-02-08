@@ -548,12 +548,8 @@ def TM_Logic_Layer_Paint_Get_Blank_Canvas(context, target_manager_id: str, targe
     preserve_texture_image                              = TM_Logic_Image_Generate_New(context, resolution_preserve_texture, channel_texture_data[0], channel_texture_data[1], channel_texture_data[2], channel_color_space)
     virtual_texture_image                               = TM_Logic_Image_Generate_New(context, resolution_virtual_texture, channel_texture_data[0], channel_texture_data[1], channel_texture_data[2], channel_color_space)
     
-    if channel_color_space == 'Non-Color':
-        preserve_texture_image.alpha_mode               = 'CHANNEL_PACKED'
-        virtual_texture_image.alpha_mode                = 'CHANNEL_PACKED'
-    else:
-        preserve_texture_image.alpha_mode               = 'STRAIGHT'
-        virtual_texture_image.alpha_mode                = 'STRAIGHT'
+    preserve_texture_image.alpha_mode                   = 'STRAIGHT'
+    virtual_texture_image.alpha_mode                    = 'STRAIGHT'
 
     preserve_texture_image.update()
     virtual_texture_image.update()
@@ -1191,10 +1187,8 @@ def TM_Logic_Mask_Create_New(context, mask_type: str, white_baground: bool = Tru
             preserve_texture_image                          = TM_Logic_Image_Generate_New(context, resolution_preserve_texture, (0.0,0.0,0.0,1.0), False, True, 'Non-Color')
             virtual_texture_image                           = TM_Logic_Image_Generate_New(context, resolution_virtual_texture, (0.0,0.0,0.0,1.0), False, True, 'Non-Color')
         
-        if hasattr(preserve_texture_image, 'alpha_mode'):
-            preserve_texture_image.alpha_mode               = 'CHANNEL_PACKED'
-        if hasattr(virtual_texture_image, 'alpha_mode'):
-            virtual_texture_image.alpha_mode                = 'CHANNEL_PACKED'
+        preserve_texture_image.alpha_mode                   = 'STRAIGHT'
+        virtual_texture_image.alpha_mode                    = 'STRAIGHT'
 
         preserve_texture_image.update()
         virtual_texture_image.update()
@@ -1561,14 +1555,15 @@ def TM_Logic_TMTexture_Virtual_Image_Update(context, target_manager_id: str, tar
     if not preserved_image:
         return False
     
+    preserved_image.update()
+    preserved_image.pack()            
+    
     virtual_image = TM_Logic_Image_Get_By_Id(target_tm_texture.m_virtual_texture_id)
     if not virtual_image:
         return False
     
     if not TM_Logic_Image_Copy(preserved_image, virtual_image):
         return False
-            
-    virtual_image.update()
 
     return True
 
@@ -1983,6 +1978,8 @@ def TM_Logic_Image_Rescale(target_texture: bpy.types.Image, new_resolution: tupl
     target_texture.scale(new_w, new_h)        
             
     target_texture.update()
+
+    target_texture.pack()
     
     return target_texture
 
@@ -2005,68 +2002,29 @@ def TM_Logic_Image_Copy(source_texture: bpy.types.Image, target_texture: bpy.typ
     target_texture_width, target_texture_height = target_texture.size 
     source_texture_width, source_texture_height = source_texture.size
 
-    source_texture_has_alpha  = source_texture.depth in {32, 128}
-    source_texture_uses_alpha = source_texture.alpha_mode != 'NONE'
-    use_alpha = source_texture_has_alpha and source_texture_uses_alpha
-
     temp_copy = None
+    
+    if (source_texture_width, source_texture_height) == ( target_texture_width, target_texture_height):
+        pixel_count = target_texture_width * target_texture_height * 4
+        buffer = array.array('f', [0.0]) * pixel_count
 
-    if source_texture.get(stamp_is_canvas):
-        if (source_texture_width, source_texture_height) == ( target_texture_width, target_texture_height):
-            proxy_pixel_count = target_texture_width * target_texture_height * 4
-            proxy_buffer      = np.empty(proxy_pixel_count, dtype=np.float32)
+        source_texture.pixels.foreach_get(buffer)
+        target_texture.pixels.foreach_set(buffer)
 
-            source_texture.pixels.foreach_get(proxy_buffer)
-            target_texture.pixels.foreach_set(proxy_buffer)
+    else:
+        temp_copy = source_texture.copy()
+        temp_copy.name = f"tm_temp_copy_{source_texture.name}"       
+        temp_copy.scale(target_texture_width, target_texture_height)
+        temp_copy.update()
 
-        else:
-            temp_name = f"tm_temp_copy_{source_texture.name}"
-            temp_copy = bpy.data.images.new(
-                        temp_name, 
-                        source_texture_width, 
-                        source_texture_height, 
-                        alpha=use_alpha, 
-                        float_buffer=source_texture.is_float)
-            
-            temp_copy.colorspace_settings.name  = source_texture.colorspace_settings.name
-            temp_copy.alpha_mode                = source_texture.alpha_mode
+        pixel_count = target_texture_width * target_texture_height * 4
+        buffer = np.empty(pixel_count, dtype=np.float32)
 
-            pixel_count = source_texture_width * source_texture_height * 4
-            buffer      = np.empty(pixel_count, dtype=np.float32)
-
-            source_texture.pixels.foreach_get(buffer)
-            temp_copy.pixels.foreach_set(buffer)
-            
-            temp_copy.scale(target_texture_width, target_texture_height)
-            temp_copy.update()
-
-            proxy_pixel_count = target_texture_width * target_texture_height * 4
-            proxy_buffer      = np.empty(proxy_pixel_count, dtype=np.float32)
-            
-            temp_copy.pixels.foreach_get(proxy_buffer)
-            target_texture.pixels.foreach_set(proxy_buffer)
-
-    else:     
-        if (source_texture_width, source_texture_height) == ( target_texture_width, target_texture_height):
-            pixel_count = target_texture_width * target_texture_height * 4
-            buffer = array.array('f', [0.0]) * pixel_count
-
-            source_texture.pixels.foreach_get(buffer)
-            target_texture.pixels.foreach_set(buffer)
-
-        else:
-            temp_copy = source_texture.copy()
-            temp_copy.name = f"tm_temp_copy_{source_texture.name}"       
-            temp_copy.scale(target_texture_width, target_texture_height)
-            temp_copy.update()
-
-            pixel_count = target_texture_width * target_texture_height * 4
-            buffer = array.array('f', [0.0]) * pixel_count
-
-            temp_copy.pixels.foreach_get(buffer)
-            target_texture.pixels.foreach_set(buffer)
-
+        temp_copy.pixels.foreach_get(buffer)
+        target_texture.pixels.foreach_set(buffer)
+                
     target_texture.update() 
+    target_texture.pack()
 
     if temp_copy:
         bpy.data.images.remove(temp_copy)
