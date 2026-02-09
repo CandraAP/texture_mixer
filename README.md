@@ -11,8 +11,8 @@
 </p>
 
 <p align="center">
-  <strong>A non-destructive, layer-based texturing toolset for Blender.</strong><br>
-  Automate complex node groups for multi-channel painting and professional mask management.
+  <strong>A layer-based texturing toolset for Blender.</strong><br>
+  Automate complex node groups for layer and mask management.
 </p>
 
 ---
@@ -50,7 +50,7 @@
 **Texture Mixer** is my first venture into Blender addon development. Coming from C++ & C# background, I am still navigating the nuances of the Blender Python API. 
 - Much of the current architecture is the result of heavy **trial and error** to bridge the gap between pure data processing and Blender’s internal systems.
 - You may encounter unpolished performance or "crawler" speeds in certain complex scenarios as I work toward more optimized, buffer-based solutions. 
-- I appreciate your patience and feedback as I continue to learn and refine the engine!
+- I appreciate your patience and feedback as I continue to learn and refine the addon!
 
 ### **Disclaimer**
 **Texture Mixer** is currently in **Alpha**. While every effort is made to ensure stability, this software is provided "as-is," without warranty of any kind. 
