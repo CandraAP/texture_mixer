@@ -31,16 +31,16 @@ import bpy.utils
 from . import texture_mixer_icon as tm_icon
 from . import texture_mixer_property as tm_property
 from . import texture_mixer_logic as tm_logic
-from .texture_mixer_debug import Debug
 #-------------------------------------------------
-package     = f"{tm_property.Addon_Data.m_package_id.upper()}"
+# from dev_tools.texture_mixer_debug import Debug
+#-------------------------------------------------
 stamp_id    = tm_property.Addon_Data.m_addon_id_stamp
 #endregion [IMPORT]
 
 #region [Main Panel]
 class TM_PT_UserInfo(bpy.types.Panel):
     """TM_PT_UserInfo"""
-    bl_idname = f"{package}_PT_UserInfo"
+    bl_idname = f"TM_PT_UserInfo"
     bl_label = tm_property.Addon_Data.m_ui_panel_label_user_welcome
     bl_category = tm_property.Addon_Data.m_ui_panel_category
     bl_space_type = 'VIEW_3D'
@@ -128,7 +128,7 @@ def UI_UserInfo_Target_Is_Not_Member(main_layout):
 #region [UserSettings]
 class TM_UL_Layer_Manager_List(bpy.types.UIList):
     """TM_UL_Layer_Manager_List"""
-    bl_idname = f"{package}_UL_Layer_Manager_List"  
+    bl_idname = f"TM_UL_Layer_Manager_List"  
 
     def filter_items(self, context, data, property):
         managers = getattr(data, property)
@@ -164,7 +164,7 @@ class TM_UL_Layer_Manager_List(bpy.types.UIList):
 
 class TM_PT_UserSettings(bpy.types.Panel):
     """TM_PT_UserSettings"""
-    bl_idname = f"{package}_PT_UserSettings"
+    bl_idname = f"TM_PT_UserSettings"
     bl_label = tm_property.Addon_Data.m_ui_panel_label_user_settings
     bl_category = tm_property.Addon_Data.m_ui_panel_category
     bl_space_type = 'VIEW_3D'
@@ -225,7 +225,7 @@ def UI_UserSettings_Layer_Manager(main_layout, user_data):
     row_panel = main_layout.row(align=True)
     row_panel.scale_y = 1.4
     row_panel.template_list(
-        f"{package}_UL_Layer_Manager_List" , "", 
+        f"TM_UL_Layer_Manager_List" , "", 
         user_data, "m_managed_tm_node_manager_collection",               
         user_data, "m_managed_tm_node_manager_pointer",
         rows=3, maxrows=3
@@ -297,7 +297,7 @@ def UI_UserSettings_Option_Input_Resolution(main_layout, active_manager):
 #region [LayerWorkSpace]
 class TM_UL_Layer_List(bpy.types.UIList):
     """TM_UL_Layer_List"""
-    bl_idname = f"{package}_UL_Layer_List"
+    bl_idname = f"TM_UL_Layer_List"
 
     def draw_filter(self, context, layout):
         pass
@@ -327,7 +327,7 @@ class TM_UL_Layer_List(bpy.types.UIList):
 
 class TM_UL_Mask_List(bpy.types.UIList):
     """TM_UL_Mask_List"""
-    bl_idname = f"{package}_UL_Mask_List"
+    bl_idname = f"TM_UL_Mask_List"
     
     def draw_filter(self, context, layout):
         pass
@@ -352,7 +352,7 @@ class TM_UL_Mask_List(bpy.types.UIList):
 
 class TM_PT_LayerWorkSpace(bpy.types.Panel):
     """TM_PT_LayerWorkSpace"""
-    bl_idname = f"{package}_PT_LayerWorkspaceNew"
+    bl_idname = f"TM_PT_LayerWorkspaceNew"
     bl_label = tm_property.Addon_Data.m_ui_panel_label_layer_settings
     bl_category = tm_property.Addon_Data.m_ui_panel_category
     bl_space_type = 'VIEW_3D'
@@ -466,7 +466,7 @@ def UI_LayerWorkspace_Layer(context, main_layout, user_data, active_manager):
         row_layer_panel = main_layout.row(align=True)
         row_layer_panel.scale_y = 1.4
         row_layer_panel.template_list(
-            f"{package}_UL_Layer_List", "", 
+            f"TM_UL_Layer_List", "", 
             active_manager, "m_managed_tm_node_collection",
             active_manager, "m_managed_tm_node_pointer",
             columns=2,
@@ -846,7 +846,7 @@ def UI_LayerWorkspace_Mask(context, main_layout, user_data, active_manager):
         row_mask_panel.enabled = active_layer.m_mask_enable
         row_mask_panel.scale_y = 1.4
         row_mask_panel.template_list(
-            f"{package}_UL_Mask_List", "", 
+            f"TM_UL_Mask_List", "", 
             active_layer, "m_managed_tm_mask_collection",
             active_layer, "m_managed_tm_mask_pointer",
             columns=2,
@@ -1105,7 +1105,7 @@ def UI_LayerWorkspace_Layer_Default_Settings(main_layout, active_manager):
 #region [LayerBrush]
 class TM_PT_LayerBrush(bpy.types.Panel):
     """TM_PT_LayerBrush"""
-    bl_idname = f"{package}_PT_LayerBrush"
+    bl_idname = f"TM_PT_LayerBrush"
     bl_label = tm_property.Addon_Data.m_ui_panel_label_brush_settings
     bl_category = tm_property.Addon_Data.m_ui_panel_category
     bl_space_type = 'VIEW_3D'
@@ -1291,7 +1291,7 @@ def UI_LayerBrush_Paint(context, main_layout, user_data, active_manager, show_te
 #region [Export]
 class TM_UL_TextureExport_List(bpy.types.UIList):
     """TM_UL_Layer_List"""
-    bl_idname = f"{package}_UL_TextureExport_List"
+    bl_idname = f"TM_UL_TextureExport_List"
 
     def draw_filter(self, context, layout):
         pass
@@ -1307,7 +1307,7 @@ class TM_UL_TextureExport_List(bpy.types.UIList):
 
 class TM_PT_TextureExport(bpy.types.Panel):
     """TM_PT_TextureExport"""
-    bl_idname = f"{package}_PT_TextureExport"
+    bl_idname = f"TM_PT_TextureExport"
     bl_label = tm_property.Addon_Data.m_ui_panel_label_export_settings
     bl_category = tm_property.Addon_Data.m_ui_panel_category
     bl_space_type = 'VIEW_3D'
@@ -1340,7 +1340,7 @@ class TM_PT_TextureExport(bpy.types.Panel):
         row_layer_panel = main_layout.row(align=True)
         row_layer_panel.scale_y = 1.4
         row_layer_panel.template_list(
-            f"{package}_UL_TextureExport_List", "", 
+            f"TM_UL_TextureExport_List", "", 
             active_manager, "m_managed_tm_texture_export_collection",
             active_manager, "m_managed_tm_texture_export_pointer",
             columns=2,

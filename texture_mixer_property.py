@@ -37,7 +37,8 @@ from bpy.props import IntVectorProperty
 from bpy.props import EnumProperty
 from bpy.props import PointerProperty
 from bpy.props import CollectionProperty
-from .texture_mixer_debug import Debug
+#-------------------------------------------------
+# from dev_tools.texture_mixer_debug import Debug
 #-------------------------------------------------
 #endregion [IMPORT]
 
@@ -46,12 +47,11 @@ class Addon_Data():
     #-------------------------------------------------
     m_addon_name                    = "Texture Mixer"
     m_addon_descriptions            = "Texturing tools addon for Blender"
-    m_addon_version                 = "0.1.0"
+    m_addon_version                 = "0.1.1"
     m_addon_status                  = "-ALPHA"
-    m_package_id                    = __package__.replace(".", "_")
     #-------------------------------------------------
-    m_addon_id_stamp                = f"{__package__.lower()}_property_id"
-    m_addon_is_canvas               = f"{__package__.lower()}_is_canvas"
+    m_addon_id_stamp                = f"texture_mixer_property_id"
+    m_addon_is_canvas               = f"texture_mixer_is_canvas"
     #-------------------------------------------------
     m_author_name                   = "Candra Agung Prasetyo"
     m_author_email                  = "yuyevon777@gmail.com"
@@ -65,7 +65,7 @@ class Addon_Data():
     m_ui_panel_label_brush_settings  = f"{m_ui_panel_category} | Brush"
     m_ui_panel_label_export_settings = f"{m_ui_panel_category} | Export"
     #-------------------------------------------------
-    m_ui_enable_support              = True
+    m_ui_enable_support = True
     #-------------------------------------------------
 #endregion [ ADDON DATA ]
 
@@ -497,114 +497,88 @@ TM_DT_Channels_Metadata = {
 #region [Property Logic]
 def TextureMixer_Property_Get_Active_Manager(context):
     """TextureMixer_Property_Get_Active_Manager"""
-    debug_id = "TextureMixer_Property_Get_Active_Manager"
 
-    try:
-        user_data = context.scene.TM_User_Data
-        if not user_data:
-            Debug.LogError("Failed to find user data.", debug_id)
-            return None
+    user_data = context.scene.TM_User_Data
 
-        user_data = context.scene.TM_User_Data
-        manager_collection = user_data.m_managed_tm_node_manager_collection
-        if not manager_collection:
-            Debug.LogWarning("No Layer Managers exist", debug_id)
-            return None
-
-        for manager in manager_collection:
-            if manager.m_enable: 
-                return manager
-            
-        Debug.LogWarning("No active Layer Manager found", debug_id)
-        return None
-    
-    except Exception as e:
-        Debug.LogError(f"{str(e)}", debug_id)
+    if not user_data:
         return None
 
+    user_data = context.scene.TM_User_Data
+    manager_collection = user_data.m_managed_tm_node_manager_collection
+    if not manager_collection:
+        return None
+
+    for manager in manager_collection:
+        if manager.m_enable: 
+            return manager
+        
+    return None
 def TextureMixer_Property_Get_Active_Layer(context):
     """TextureMixer_Property_Get_Active_Layer"""
-    debug_id = "TextureMixer_Property_Get_Active_Layer"
     
-    try:
-        active_manager = TextureMixer_Property_Get_Active_Manager(context)
-        if not active_manager:
-            return
+    active_manager = TextureMixer_Property_Get_Active_Manager(context)
+    
+    if not active_manager:
+        return
 
-        managed_layer = active_manager.m_managed_tm_node_collection
-        if len(managed_layer) == 0:
-            Debug.LogWarning("Create new layer first.", debug_id)
-            return None
+    managed_layer = active_manager.m_managed_tm_node_collection
+    if len(managed_layer) == 0:
+        return None
 
-        if 0 <= active_manager.m_managed_tm_node_pointer < len(managed_layer):
-            layer = managed_layer[active_manager.m_managed_tm_node_pointer]
-            if layer:
-                return layer
-        else:
-            Debug.LogWarning("Active layer pointer out of range!", debug_id)
-    except Exception as e:
-        Debug.LogError(f"{str(e)}", debug_id)
+    if 0 <= active_manager.m_managed_tm_node_pointer < len(managed_layer):
+        layer = managed_layer[active_manager.m_managed_tm_node_pointer]
+        if layer:
+            return layer
+    else:
         return None
     
 def TextureMixer_Property_Get_Material_With_Id(material_id: str) -> bpy.types.Material | None:
     """TM_Logic_Material_Get_By_Id"""
-    debug_id = "TM_Logic_Material_Get_By_Id"
+    
     stamp_id = Addon_Data.m_addon_id_stamp
 
-    try:
-        for mat in bpy.data.materials:
+    for mat in bpy.data.materials:
             if stamp_id in mat and mat[stamp_id] == material_id:
                 return mat
-
-        Debug.LogError(f"Material with ID '{material_id}' not found", debug_id)
-        return None
-    except Exception as e:
-        Debug.LogError(f"{str(e)}", debug_id)
-        return None
+            
+    return None
 
 def TextureMixer_Property_Get_ShaderNode_With_Id(context, target_node_id:str, target_internal_node_name:str|None = None) -> bpy.types.Node | None:
     """TextureMixer_Property_Get_ShaderNode_With_Id"""
-    debug_id = "TextureMixer_Property_Get_ShaderNode_With_Id"
+    
     stamp_id = Addon_Data.m_addon_id_stamp
 
-    try:
-        active_manager = TextureMixer_Property_Get_Active_Manager(context)
-        if not active_manager:
-            return None
-        
-        active_material = TextureMixer_Property_Get_Material_With_Id(active_manager.m_managed_material_id)
-        if not active_material:
-            return None        
-        if not active_material.use_nodes:
-            Debug.LogError(f"Active material '{active_material.name}' doesnt use nodes.", debug_id)
-            return None
-        
-        active_node_tree = active_material.node_tree
-
-        active_node = None
-        for node in active_node_tree.nodes:
-            if node.get(stamp_id) == target_node_id:
-                active_node = node
-        if not active_node:
-            Debug.LogError("Failed to find active node.", debug_id)
-            return None
-
-        if not target_internal_node_name or active_node.type != 'GROUP':
-            return active_node
-
-        internal_tree = active_node.node_tree
-        if internal_tree is None:
-            return None
-
-        internal_node = internal_tree.nodes.get(target_internal_node_name)
-        if internal_node is None:
-            return None
-
-        return internal_node
-
-    except Exception as e:
-        Debug.LogError(f"{str(e)}", debug_id)
+    active_manager = TextureMixer_Property_Get_Active_Manager(context)
+    if not active_manager:
         return None
+    
+    active_material = TextureMixer_Property_Get_Material_With_Id(active_manager.m_managed_material_id)
+    if not active_material:
+        return None        
+    if not active_material.use_nodes:
+        return None
+    
+    active_node_tree = active_material.node_tree
+
+    active_node = None
+    for node in active_node_tree.nodes:
+        if node.get(stamp_id) == target_node_id:
+            active_node = node
+    if not active_node:
+        return None
+
+    if not target_internal_node_name or active_node.type != 'GROUP':
+        return active_node
+
+    internal_tree = active_node.node_tree
+    if internal_tree is None:
+        return None
+
+    internal_node = internal_tree.nodes.get(target_internal_node_name)
+    if internal_node is None:
+        return None
+
+    return internal_node
 #endregion [Property Logic]
 
 #region [TM_Texture]

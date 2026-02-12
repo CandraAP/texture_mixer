@@ -50,8 +50,10 @@ from bpy.props import EnumProperty
 from bpy.props import PointerProperty
 from bpy.props import CollectionProperty
 #-------------------------------------------------
-from .texture_mixer_debug import Debug
+# from dev_tools.texture_mixer_debug import Debug
+#-------------------------------------------------
 # from . import texture_mixer_undo as tm_undo
+#-------------------------------------------------
 from . import texture_mixer_logic as tm_logic
 from . import texture_mixer_property as tm_property
 #-------------------------------------------------
@@ -72,15 +74,15 @@ class TM_OT_Test_Dummy(bpy.types.Operator):
     bl_options      = {'REGISTER', 'INTERNAL'}
     
     def execute(self, context):
-        debug_id = "TM_OT_Test_Dummy"
+        # debug_id = "TM_OT_Test_Dummy"
 
-        Debug.Separator(debug_id, "=")
-        Debug.Log("Test dummy : [START]", debug_id)
+        # Debug.Separator(debug_id, "=")
+        # Debug.Log("Test dummy : [START]", debug_id)
 
         tm_logic.TM_Logic_Test_Dummy(context)
 
-        Debug.Log("Test dummy : [FINISHED]", debug_id)
-        Debug.Separator(debug_id, "=")
+        # Debug.Log("Test dummy : [FINISHED]", debug_id)
+        # Debug.Separator(debug_id, "=")
         return {'FINISHED'}
 #endregion [Dummy / Test]
 
@@ -96,8 +98,7 @@ class TM_OT_LayerManager_Create_New(bpy.types.Operator):
     def poll(cls, context):
         return tm_logic.TM_Logic_Object_Get_Active_One(context)
 
-    def execute(self, context):
-        debug_id = "TM_OT_LayerManager_Create_New"        
+    def execute(self, context):      
 
         active_object = tm_logic.TM_Logic_Object_Get_Active_One(context)
         if not active_object:
@@ -145,10 +146,8 @@ class TM_OT_LayerManager_Activate(bpy.types.Operator):
     m_manager_id : StringProperty(name="Manager ID")  
 
     def execute(self, context):
-        debug_id = "TM_OT_LayerManager_Activate"
 
         if not self.m_manager_id:
-            Debug.LogError("Invalid Manager ID — no action taken", debug_id)
             return {'CANCELLED'}
 
         change_state_success = tm_logic.TM_Logic_LayerManager_Set_Active_State(context, self.m_manager_id)
@@ -187,9 +186,6 @@ class TM_OT_LayerManager_Remove(bpy.types.Operator):
         layout.label(text="Are you sure?", icon='QUESTION')
 
     def execute(self, context):
-        debug_id = "TM_OT_LayerManager_Remove"
-
-
         active_object = tm_logic.TM_Logic_Object_Get_Active_One(context)
         if not active_object:
             return {'CANCELLED'}
@@ -197,7 +193,6 @@ class TM_OT_LayerManager_Remove(bpy.types.Operator):
         user_data = context.scene.TM_User_Data
         manager_collection = user_data.m_managed_tm_node_manager_collection
         if len(manager_collection) == 0:
-            Debug.LogError("No Layer Managers exist", debug_id)
             return {'CANCELLED'}
 
         manager_to_remove = tm_logic.TM_Logic_LayerManager_Get_Active_Manager(context)
@@ -207,7 +202,6 @@ class TM_OT_LayerManager_Remove(bpy.types.Operator):
         result = tm_logic.TM_Logic_LayerManager_Remove_By_Id(context, manager_to_remove.m_id)
         
         if not result:
-            Debug.LogError(f"Failed to remove Layer Manager '{manager_name}'", debug_id)
             return {'CANCELLED'}
 
         for area in context.screen.areas:
@@ -224,7 +218,6 @@ class TM_OT_LayerManager_Change_Main_Shader(bpy.types.Operator):
     bl_options      = {'REGISTER', 'INTERNAL'}
 
     def execute(self, context):
-        debug_id = "TM_OT_LayerManager_Change_Main_Shader"
 
         target_manager = tm_logic.TM_Logic_LayerManager_Get_Active_Manager(context)
 
@@ -234,7 +227,6 @@ class TM_OT_LayerManager_Change_Main_Shader(bpy.types.Operator):
             tm_logic.TM_Logic_Layer_Refresh_ShaderNode(context, target_manager.m_id)
             return {'FINISHED'}
         else:
-            Debug.LogWarning("Failed to change main shader", debug_id)
             return {'CANCELLED'}
 
 class TM_OT_LayerManager_Apply_Working_Resolution(bpy.types.Operator):
@@ -245,7 +237,6 @@ class TM_OT_LayerManager_Apply_Working_Resolution(bpy.types.Operator):
     bl_options      = {'REGISTER', 'INTERNAL'}
 
     def invoke(self, context, event):
-        debug_id = "TM_OT_LayerManager_Apply_Working_Resolution"
 
         active_manager = tm_logic.TM_Logic_LayerManager_Get_Active_Manager(context)
         if not active_manager:
@@ -262,11 +253,9 @@ class TM_OT_LayerManager_Apply_Working_Resolution(bpy.types.Operator):
         if sum_virtual > sum_cache:
             active_manager.m_preserved_resolution_cache = active_manager.m_virtual_resolution
             self.report({'ERROR'}, "Working resolution cannot exceed preview resolution.")
-            Debug.LogWarning("Working resolution cannot exceed preview resolution.", debug_id)
             return {'CANCELLED'}
 
         if sum_preserved > sum_cache:
-            Debug.LogWarning("Potential data loss. Requesting confirmation.", debug_id)
             return context.window_manager.invoke_props_dialog(self, width=400)
         
         return self.execute(context)
@@ -291,7 +280,6 @@ class TM_OT_LayerManager_Apply_Working_Resolution(bpy.types.Operator):
 
         result = tm_logic.TM_Logic_TMTexture_Set_Working_Resolution(context, active_manager.m_id)
         if not result:
-            Debug.LogWarning("Failed to apply working resolution", debug_id)
             return {'CANCELLED'}
 
         active_manager.m_preserved_resolution = active_manager.m_preserved_resolution_cache
@@ -324,12 +312,10 @@ class TM_OT_LayerManager_Apply_Preview_Resolution(bpy.types.Operator):
         if sum_cache > sum_preserved:
             active_manager.m_virtual_resolution_cache = active_manager.m_preserved_resolution
             self.report({'ERROR'}, "Preview resolution cannot exceed Working resolution.")
-            Debug.LogWarning("Preview resolution cannot exceed Working resolution.", debug_id)
             return {'CANCELLED'}
         
         result = tm_logic.TM_Logic_TMTexture_Set_Virtual_Resolution(context, active_manager.m_id)
         if not result:
-            Debug.LogWarning("Failed to apply preview resolution", debug_id) 
             return {'CANCELLED'}       
 
         active_manager.m_virtual_resolution = active_manager.m_virtual_resolution_cache  
@@ -362,8 +348,6 @@ class TM_OT_Layer_Create_New_Fill(bpy.types.Operator):
     bl_options      = {'REGISTER', 'INTERNAL'}
     
     def execute(self, context):
-        debug_id = "TM_OT_Layer_Create_New_Fill"
-
         result = OP_Layer_Create_New(context, 'LAYER_PRESERVED')
 
         return result
@@ -376,16 +360,12 @@ class TM_OT_Layer_Create_New_Group(bpy.types.Operator):
     bl_options      = {'REGISTER', 'INTERNAL'}
     
     def execute(self, context):
-        debug_id = "TM_OT_Layer_Create_New_Group"
-
         result = OP_Layer_Create_New(context, 'GROUP')
 
         return result    
 
 def OP_Layer_Create_New(context, layer_type: str):
     """OP_Layer_Create_New"""
-    debug_id = "OP_Layer_Create_New"
-
     
     active_manager  = tm_logic.TM_Logic_LayerManager_Get_Active_Manager(context)
     if active_manager is None:
@@ -453,7 +433,6 @@ class TM_OT_Layer_Remove(bpy.types.Operator):
         layout.label(text="Are you sure?", icon='QUESTION')
 
     def execute(self, context): 
-        debug_id = "TM_OT_Layer_Remove"
 
         active_manager  = tm_logic.TM_Logic_LayerManager_Get_Active_Manager(context)
 
@@ -467,11 +446,10 @@ class TM_OT_Layer_Remove(bpy.types.Operator):
         result = tm_logic.TM_Logic_Layer_Remove_By_Id(context, active_manager.m_id, active_layer.m_id)
 
         if result:
-
             tm_logic.TM_Logic_Layer_Refresh_ShaderNode(context, active_manager.m_id)
 
         else:
-            Debug.LogWarning("Failed to remove selected layer", debug_id)
+            return {'CANCELLED'}
 
         return {'FINISHED'}
 
@@ -485,7 +463,6 @@ class TM_OT_Layer_Move(bpy.types.Operator):
     direction: EnumProperty(items=[('UP', "Selected layer go up.", ""), ('DOWN', "Selected layer go down.", "")])  
 
     def execute(self, context):
-        debug_id = "TM_OT_Layer_Move"
 
         active_manager  = tm_logic.TM_Logic_LayerManager_Get_Active_Manager(context)
         if not active_manager:
@@ -496,13 +473,11 @@ class TM_OT_Layer_Move(bpy.types.Operator):
         
         if active_layers and len(active_layers)>0:
             if active_pointer < 0 or active_pointer > len(active_layers)-1:
-                Debug.LogWarning("Layer list is empty or not initialized.", debug_id)
                 return {'CANCELLED'}
 
         active_layer    = active_layers[active_pointer]
 
         if not active_layer:
-            Debug.LogWarning("Layer is empty or not initialized.", debug_id)
             return {'CANCELLED'}
 
         if self.direction == 'UP':
@@ -633,7 +608,6 @@ class TM_OT_Layer_Join_Group(bpy.types.Operator):
     direction: EnumProperty(items=[('UP', "Join Group Above", ""), ('DOWN', "Join Group Below", "")])  
 
     def execute(self, context):
-        debug_id = "TM_OT_Layer_Join_Group"
 
         active_manager  = tm_logic.TM_Logic_LayerManager_Get_Active_Manager(context)
         if not active_manager:
@@ -644,14 +618,12 @@ class TM_OT_Layer_Join_Group(bpy.types.Operator):
         
         if active_layers and len(active_layers)>0:
             if active_pointer < 0 or active_pointer > len(active_layers)-1:
-                Debug.LogError("Layer is empty or not initialized.", debug_id)
                 return {'CANCELLED'}
 
         active_layer    = active_layers[active_pointer]
         
         if self.direction == 'UP':
             if active_pointer <= 0:
-                Debug.LogWarning("Layer is already at the top, not possible to join anything above layer.", debug_id)
                 return {'CANCELLED'}
 
             upper_pointer = active_pointer-1
@@ -667,7 +639,6 @@ class TM_OT_Layer_Join_Group(bpy.types.Operator):
         
         elif self.direction == 'DOWN':
             if active_pointer >= len(active_layers)-1:
-                Debug.LogWarning("Layer is already at the bottom, not possible to join anything below layer.", debug_id)
                 return {'CANCELLED'}
 
             lower_pointer = active_pointer+1
@@ -675,7 +646,6 @@ class TM_OT_Layer_Join_Group(bpy.types.Operator):
 
             if lower_layer:
                 if lower_layer.m_type != 'GROUP':
-                    Debug.LogWarning("Lower layer is not a group.", debug_id)
                     return {'CANCELLED'}
                 
                 new_pointer = lower_pointer
@@ -699,7 +669,6 @@ class TM_OT_Layer_Exit_Group(bpy.types.Operator):
     direction: EnumProperty(items=[('UP', "Exit To Above Group", ""), ('DOWN', "Exit To Below Group", "")])  
 
     def execute(self, context):
-        debug_id = "TM_OT_Layer_Exit_Group"
 
         active_manager  = tm_logic.TM_Logic_LayerManager_Get_Active_Manager(context)
         if not active_manager:
@@ -710,7 +679,6 @@ class TM_OT_Layer_Exit_Group(bpy.types.Operator):
 
         if active_layers and len(active_layers)>0:
             if active_pointer < 0 or active_pointer > len(active_layers)-1:
-                Debug.LogError("Layer is empty or not initialized.", debug_id)
                 return {'CANCELLED'}
 
         active_layer    = active_layers[active_pointer]
@@ -751,16 +719,14 @@ class TM_OT_Layer_Load_Texture(bpy.types.Operator, ImportHelper):
 
     m_channel_name: StringProperty(name="Channel Name")
 
-    def execute(self, context):        
-        debug_id = "TM_OT_Layer_Load_Texture"       
+    def execute(self, context):              
 
         result = OP_Texture_Loader(self, context)   
 
         return result
         
 def OP_Texture_Loader(self, context):
-    """OP_Texture_Loader"""
-    debug_id = "OP_Texture_Loader"   
+    """OP_Texture_Loader""" 
 
     channel_meta = tm_property.TM_DT_Channels_Metadata[self.m_channel_name]        
     channel_color_space     = channel_meta['default_color_space']
@@ -769,7 +735,6 @@ def OP_Texture_Loader(self, context):
 
     file_path = self.filepath
     if not file_path:
-        Debug.LogWarning("File selection cancelled.", debug_id)
         return {'CANCELLED'}
 
     active_manager = tm_logic.TM_Logic_LayerManager_Get_Active_Manager(context)
@@ -798,8 +763,7 @@ def OP_Texture_Loader(self, context):
     channel_target = None
     if hasattr(active_layer.m_channel, channel_attr_name):
         channel_target = getattr(active_layer.m_channel, channel_attr_name)
-    else:
-        Debug.LogError(f"Manager missing attribute: {channel_attr_name}", debug_id)
+        
     if not channel_target:
         return {'CANCELLED'}
     
@@ -841,7 +805,6 @@ class TM_OT_Layer_Remove_Texture(bpy.types.Operator):
     m_channel_name: StringProperty(name="Channel Name")
 
     def execute(self, context):        
-        debug_id = "TM_OT_Layer_Remove_Texture" 
 
         result = OP_Texture_Remover(self, context)
   
@@ -849,7 +812,6 @@ class TM_OT_Layer_Remove_Texture(bpy.types.Operator):
 
 def OP_Texture_Remover(self, context):
     """OP_Texture_Remover"""
-    debug_id = "OP_Texture_Remover"
 
     channel_meta = tm_property.TM_DT_Channels_Metadata[self.m_channel_name] 
     attr_channel_name = f"m_channel_{channel_meta['default_init']}"
@@ -862,22 +824,16 @@ def OP_Texture_Remover(self, context):
     if not active_layer:
         return {'CANCELLED'}
     if active_layer.m_type != 'LAYER_PRESERVED':
-        Debug.LogWarning("Active layer is not a valid target.", debug_id)
         return {'CANCELLED'}
 
     channel_target = None
     if hasattr(active_layer.m_channel, attr_channel_name):
         channel_target = getattr(active_layer.m_channel, attr_channel_name)
-        if channel_target is None:
-            Debug.LogWarning(f"Channel {attr_channel_name} exists but is uninitialized (None).", debug_id)
-    else:
-        Debug.LogError(f"Manager missing attribute: {attr_channel_name}", debug_id)
 
     if not channel_target:
         return {'CANCELLED'}
 
     if not channel_target.m_tm_texture_id:
-        Debug.LogWarning("TM Texture is missing.", debug_id)
         return {'CANCELLED'}
 
     result = tm_logic.TM_Logic_TMTexture_Remove_By_Id(context, active_manager.m_id, channel_target.m_tm_texture_id)
@@ -885,7 +841,6 @@ def OP_Texture_Remover(self, context):
         channel_target.m_tm_texture_id = ""
         return {'FINISHED'}
     
-    Debug.LogWarning("TM Texture is missing.", debug_id)
     return {'CANCELLED'}
 #endregion [Layer]
 
@@ -898,7 +853,6 @@ class TM_OT_Mask_Create_New_Paint_Black(bpy.types.Operator):
     bl_options      = {'REGISTER', 'INTERNAL'}
 
     def execute(self, context):
-        debug_id = "TM_OT_Mask_Create_New_Paint_Black"
 
         active_manager = tm_logic.TM_Logic_LayerManager_Get_Active_Manager(context)
         active_layer = tm_logic.TM_Logic_Layer_Get_Active_Layer(context)
@@ -916,7 +870,6 @@ class TM_OT_Mask_Create_New_Paint_White(bpy.types.Operator):
     bl_options      = {'REGISTER', 'INTERNAL'}
 
     def execute(self, context):
-        debug_id = "TM_OT_Mask_Create_New_Paint_White"
                 
         active_manager = tm_logic.TM_Logic_LayerManager_Get_Active_Manager(context)
         active_layer = tm_logic.TM_Logic_Layer_Get_Active_Layer(context)
@@ -934,7 +887,6 @@ class TM_OT_Mask_Create_New_Preserved(bpy.types.Operator):
     bl_options      = {'REGISTER', 'INTERNAL'}
 
     def execute(self, context):
-        debug_id = "TM_OT_Mask_Create_New_Preserved"
         
         active_manager = tm_logic.TM_Logic_LayerManager_Get_Active_Manager(context)
         active_layer = tm_logic.TM_Logic_Layer_Get_Active_Layer(context)
@@ -954,8 +906,6 @@ class TM_OT_Mask_Move(bpy.types.Operator):
     direction: EnumProperty(items=[('UP', "Selected layer go up.", ""), ('DOWN', "Selected layer go down.", "")])
 
     def execute(self, context):
-        debug_id = "TM_OT_Mask_Move"
-    
 
         active_manager  = tm_logic.TM_Logic_LayerManager_Get_Active_Manager(context)
         if not active_manager:
@@ -999,7 +949,6 @@ class TM_OT_Mask_Texture_Loader(bpy.types.Operator, ImportHelper):
     )  
 
     def execute(self, context):        
-        debug_id = "TM_OT_Mask_Texture_Loader"
             
         result = OP_Mask_Texture_Loader(self, context)   
 
@@ -1011,7 +960,6 @@ def OP_Mask_Texture_Loader(self, context):
 
     file_path = self.filepath
     if not file_path:
-        Debug.LogWarning("File selection cancelled.", debug_id)
         return {'CANCELLED'}
 
     active_manager = tm_logic.TM_Logic_LayerManager_Get_Active_Manager(context)
@@ -1028,17 +976,14 @@ def OP_Mask_Texture_Loader(self, context):
     
     mask_layer = active_layer.m_managed_tm_mask_collection
     if not mask_layer:
-        Debug.LogWarning("Active Mask Layer has no mask.", debug_id)
         return {'CANCELLED'}
 
     active_pointer = active_layer.m_managed_tm_mask_pointer
     if not active_pointer >= 0:
-        Debug.LogWarning("Active Mask Layer has no mask.", debug_id)
         return {'CANCELLED'}
 
     mask = mask_layer[active_pointer]
     if not mask:
-        Debug.LogWarning("Active Mask Layer has no mask.", debug_id)
         return {'CANCELLED'}
     
     active_mask_node = tm_logic.TM_Logic_ShaderNode_Get_By_Id(host_material, mask.m_shader_node_system_mask_id)
@@ -1077,7 +1022,6 @@ class TM_OT_Mask_Texture_Remover(bpy.types.Operator):
         return result
 
 def OP_Mask_Texture_Remover(self, context):
-    debug_id = "OP_Mask_Texture_Remover"
 
     active_manager = tm_logic.TM_Logic_LayerManager_Get_Active_Manager(context)
     if not active_manager:
@@ -1089,21 +1033,17 @@ def OP_Mask_Texture_Remover(self, context):
     
     mask_layer = active_layer.m_managed_tm_mask_collection
     if not mask_layer:
-        Debug.LogWarning("Active Mask Layer has no mask.", debug_id)
         return {'CANCELLED'}
 
     active_pointer = active_layer.m_managed_tm_mask_pointer
     if not active_pointer >= 0:
-        Debug.LogWarning("Active Mask Layer has no mask.", debug_id)
         return {'CANCELLED'}
 
     mask = mask_layer[active_pointer]
     if not mask:
-        Debug.LogWarning("Active Mask Layer has no mask.", debug_id)
         return {'CANCELLED'}
 
     if not mask.m_tm_texture_id:
-        Debug.LogWarning("TM Texture is missing.", debug_id)
         return {'CANCELLED'}
 
     result = tm_logic.TM_Logic_TMTexture_Remove_By_Id(context, active_manager.m_id, mask.m_tm_texture_id)
@@ -1132,17 +1072,14 @@ class TM_OT_Mask_Remove(bpy.types.Operator):
         
         mask_layer = active_layer.m_managed_tm_mask_collection
         if not mask_layer:
-            Debug.LogWarning("Active Mask Layer has no mask.", debug_id)
             return {'CANCELLED'}
 
         active_pointer = active_layer.m_managed_tm_mask_pointer
         if not active_pointer >= 0:
-            Debug.LogWarning("Active Mask Layer has no mask.", debug_id)
             return {'CANCELLED'}
 
         mask = mask_layer[active_pointer]
         if not mask:
-            Debug.LogWarning("Active Mask Layer has no mask.", debug_id)
             return {'CANCELLED'}
         
         result = tm_logic.TM_Logic_Mask_Remove_By_Id(context, active_manager.m_id, active_layer.m_id, mask.m_id)
@@ -1151,7 +1088,6 @@ class TM_OT_Mask_Remove(bpy.types.Operator):
             tm_logic.TM_Logic_Mask_Refresh_ShaderNode(context, active_manager.m_id, active_layer.m_id)
             return {'FINISHED'}            
         else:
-            Debug.LogWarning(f"Failed to remove mask", debug_id)
             return {'CANCELLED'}
 #endregion [Mask]
 
@@ -1164,7 +1100,6 @@ class TM_OT_Enable_Texture_Painting_Mode(bpy.types.Operator):
     bl_options      = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-        debug_id = "TM_OT_Enable_Texture_Painting_Mode"
     
         if not tm_logic.TM_Logic_Utility_Viewport_Set_Object_Mode('TEXTURE_PAINT'):
             return {'CANCELLED'}
@@ -1180,8 +1115,6 @@ class TM_OT_Layer_Paint_Blender_Multi_Channel(bpy.types.Operator):
     bl_label        = "Texture Mixer Paint Mode"
     bl_description  = "Texture Mixer Paint Mode"
     bl_options      = {'REGISTER', 'INTERNAL'}
-
-    debug_id    = "TM_OT_Layer_Paint_Blender_Multi_Channel"
     
     m_show_text  : StringProperty(name="Show Text", default="")
     m_paint_type : EnumProperty(items=[('NONE', "", ""), ('COLOR', "", ""), ('ERASE', "", ""), ('UTILITY', "", "")])
@@ -1260,7 +1193,7 @@ class TM_OT_Layer_Paint_Blender_Multi_Channel(bpy.types.Operator):
 
             return {'RUNNING_MODAL'}
         except Exception as e:
-            Debug.LogError(f"Invoke: {e}", self.debug_id)
+            # print(f"Invoke Error: {e}")
             self.CleanUp(context)
             return {'CANCELLED'}    
          
@@ -1312,7 +1245,7 @@ class TM_OT_Layer_Paint_Blender_Multi_Channel(bpy.types.Operator):
 
             return {'RUNNING_MODAL'}
         except Exception as e:
-            Debug.LogError(f"Modal: {e}", self.debug_id)
+            print(f"Modal Error: {e}")
             self.CleanUp(context)
             return {'CANCELLED'}  
         
@@ -1320,7 +1253,7 @@ class TM_OT_Layer_Paint_Blender_Multi_Channel(bpy.types.Operator):
         try:
             return {'RUNNING_MODAL'}
         except Exception as e:
-            Debug.LogError(f"Cancel: {e}", self.debug_id)
+            # print(f"Cancel Error: {e}")
             self.CleanUp(context)
             return {'CANCELLED'}  
             
@@ -1569,7 +1502,7 @@ class TM_OT_Layer_Paint_Blender_Single_Channel(bpy.types.Operator):
             self.OnGUI(context)
             return self.Start(context, event)
         except Exception as e:
-            Debug.LogError(f"Invoke Exception: {e}", self.debug_id)
+            # print(f"Invoke Exception: {e}")
             self.CleanUp(context)
             return {'CANCELLED'}   
    
@@ -1606,7 +1539,7 @@ class TM_OT_Layer_Paint_Blender_Single_Channel(bpy.types.Operator):
                 return self.OnPointerExit(context) 
             return {'RUNNING_MODAL'} 
         except Exception as e:
-            Debug.LogError(f"Modal Exception: {e}", self.debug_id)
+            # print(f"Modal Exception: {e}")
             self.CleanUp(context)
             return {'CANCELLED'}      
     
@@ -1614,7 +1547,7 @@ class TM_OT_Layer_Paint_Blender_Single_Channel(bpy.types.Operator):
         try:
             self.CleanUp(context)        
         except Exception as e:
-            Debug.LogError(f"Cancel Exception: {e}", self.debug_id)
+            # print(f"Cancel Exception: {e}")
             self.CleanUp(context)
             return {'CANCELLED'}              
     #endregion [Internal]
@@ -1794,7 +1727,6 @@ class TM_OT_Export_Template_Create_New(bpy.types.Operator):
     bl_options      = {'REGISTER', 'INTERNAL', 'UNDO'}
 
     def execute(self, context):
-        debug_id = "TM_OT_Export_Template_Create_New"
 
         new_template = tm_logic.TM_Logic_Export_Template_Create_New(context)
 
@@ -1811,7 +1743,6 @@ class TM_OT_Export_Template_Delete(bpy.types.Operator):
     bl_options      = {'REGISTER', 'INTERNAL', 'UNDO'}
 
     def execute(self, context):
-        debug_id = "TM_OT_Export_Template_Delete"
 
         remove_action = tm_logic.TM_Logic_Export_Template_Remove(context)
 
@@ -1826,8 +1757,6 @@ class TM_OT_Export_Bake(bpy.types.Operator):
     bl_label        = "Bake Export Texture"
     bl_description  = "Bake Export Texture"
     bl_options      = {'REGISTER', 'INTERNAL', 'BLOCKING'}
-
-    debug_id = "TM_OT_Export_Bake"
 
     m_process_state : EnumProperty(name="Process State", items=[
         ('None', "", ""),
@@ -1868,7 +1797,7 @@ class TM_OT_Export_Bake(bpy.types.Operator):
             self.DrawUI(context)
             return self.Start(context, event)
         except Exception as e:
-            Debug.LogError(f"Invoke Exception: {e}", self.debug_id)
+            # print(f"Invoke Exception: {e}")
             self.CleanUp(context)
             return {'CANCELLED'}   
         
@@ -1892,7 +1821,7 @@ class TM_OT_Export_Bake(bpy.types.Operator):
 
             return {'RUNNING_MODAL'} 
         except Exception as e:
-            Debug.LogError(f"Modal Exception: {e}", self.debug_id)
+            # print(f"Modal Exception: {e}")
             self.CleanUp(context)
             return {'CANCELLED'}  
 
@@ -1900,7 +1829,7 @@ class TM_OT_Export_Bake(bpy.types.Operator):
         try:
             self.CleanUp(context)        
         except Exception as e:
-            Debug.LogError(f"Cancel Exception: {e}", self.debug_id)
+            # print(f"Cancel Exception: {e}")
             self.CleanUp(context)
             return {'CANCELLED'}  
     
@@ -2322,7 +2251,6 @@ class TM_OT_Export_Build_Active_Channels_Template(bpy.types.Operator):
     bl_options      = {'REGISTER', 'INTERNAL', 'UNDO'}
 
     def execute(self, context):
-        debug_id = "TM_OT_Export_BuildActive_Channels_Template"
 
         active_manager = tm_logic.TM_Logic_LayerManager_Get_Active_Manager(context)
         if not active_manager:
@@ -2397,7 +2325,7 @@ class TM_OT_Layer_Paint_Experimental(bpy.types.Operator):
     bl_description  = "Experimental Layer Paint Mode"
     bl_options      = {'REGISTER', 'INTERNAL'}
 
-    debug_id = "TM_OT_Layer_Paint_ExperimentalMode"
+    # debug_id = "TM_OT_Layer_Paint_ExperimentalMode"
     
     m_enter_painting_mode = False 
 
@@ -2537,7 +2465,7 @@ class TM_OT_Layer_Paint_Experimental(bpy.types.Operator):
         self.m_channel_active   = tm_logic.TM_Logic_Layer_Paint_Mode_Get_Active_Channel_Data(context)
         
         if len(self.m_channel_active) == 0:
-            Debug.LogWarning("No active layer", self.debug_id)
+            # Debug.LogWarning("No active layer", self.debug_id)
             return  {'CANCELLED'}    
 
         self.m_falloff_lut      = tm_logic.TM_Logic_Brush_Get_Falloff_LUT(context)

@@ -1,11 +1,18 @@
 # CAP Internal Development Folder
 .do_not_include_me/
+dev_tools/
 texture_mixer_project_builder_*.bat
 
 # Blender temporary files
 *.blend1
 *.blend2
 *.blend3
+*.blend4
+*.blend5
+*.blend6
+*.blend7
+*.blend8
+*.blend9
 __pycache__/
 *.pyc
 

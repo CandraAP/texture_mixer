@@ -28,9 +28,10 @@ import bpy
 import os
 from bpy.utils import previews
 from typing import Optional, Dict
-from .texture_mixer_debug import Debug
 #-------------------------------------------------
-debug_id = "TextureMixer_Icon_Loader"
+# from dev_tools.texture_mixer_debug import Debug
+#-------------------------------------------------
+# debug_id = "TextureMixer_Icon_Loader"
 #endregion [IMPORT]
 
 #region [ICON]
@@ -60,7 +61,6 @@ def need_to_register():
     icon_dir = os.path.join(addon_dir, TM_Icon_Custom_Directory)
     #---------------------------------------------    
     if not os.path.isdir(icon_dir):
-        Debug.LogError(f"Icon directory not found at {icon_dir}",f"{debug_id}")
         need_to_unregister() 
         return
     #---------------------------------------------        
@@ -69,11 +69,8 @@ def need_to_register():
         if os.path.exists(image_path):
             try:
                 pcoll.load(icon_name, image_path, 'IMAGE') 
-                Debug.Log(f"Loaded icon {icon_name} from {filename}",f"{debug_id}")
             except Exception as e:
-                Debug.LogError(f"Failed to loading icon {filename} as {icon_name}: {e}",f"{debug_id}")
-        else:
-            Debug.LogWarning(f"Icon file not found {image_path}",f"{debug_id}")
+                print(f"{e}")
     TM_Icon_Custom_Icons[TM_Icon_Collection_Name] = pcoll
 #-------------------------------------------------
 def need_to_unregister():

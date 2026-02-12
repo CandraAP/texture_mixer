@@ -1,7 +1,7 @@
 schema_version = "1.0.0"
 
 id          = "texture_mixer"
-version     = "0.1.0"
+version     = "0.1.1"
 name        = "Texture Mixer"
 tagline     = "Layer-based PBR mixing and texture management"
 maintainer  = "Candra Agung Prasetyo <yuyevon777@gmail.com>"
@@ -9,10 +9,6 @@ type        = "add-on"
 license     = ["SPDX:GPL-3.0-or-later"]          
 copyright   = ["2025-2026 Candra Agung Prasetyo"]
 blender_version_min = "4.5.0"
-
-# [blender]
-# platforms   = ["windows-x64", "macosx-arm64", "linux-x64"]
-# version     = ">=4.5.0"
 
 [addon]
 category    = "Material"
@@ -24,5 +20,31 @@ homepage    = "https://github.com/CandraAP/texture_mixer"
 issues      = "https://github.com/CandraAP/texture_mixer/issues"
 documentation = "https://github.com/CandraAP/texture_mixer/blob/main/README.md"
 
+[build]
+paths_exclude_pattern = [
+    # CAP Internal Development
+    "/.git/",
+    "/.do_not_include_me/",
+    "/dev_tools/",
+    "texture_mixer_project_builder_*.bat",
+    ".gitignore",
+
+    # Blender temporary files
+    "*.blend[1-9]",
+    "__pycache__/",
+    "*.pyc",
+
+    # VS Code & OS garbage
+    "/.vscode/",
+    ".DS_Store",
+    "Thumbs.db",
+
+    # Build artifacts
+    "*.zip"
+]
+
+# [blender]
+# platforms   = ["windows-x64", "macosx-arm64", "linux-x64"]
+# version     = ">=4.5.0"
 
 # [dependencies]

@@ -30,7 +30,8 @@ from . import texture_mixer_icon as tm_icon
 from . import texture_mixer_property as tm_property
 from . import texture_mixer_operators as tm_operators
 from . import texture_mixer_ui as tm_ui
-from .texture_mixer_debug import Debug
+#-------------------------------------------------
+# from dev_tools.texture_mixer_debug import Debug
 #-------------------------------------------------
 #endregion [IMPORT]
 
@@ -41,7 +42,7 @@ bl_info = {
     "author": "Candra Agung Prasetyo",
     "description": "Layer-based PBR mixing and texture management",
     "blender": (4, 5, 0),
-    "version": (0, 1, 0),
+    "version": (0, 1, 1),
     "location": "View3D > Sidebar > Texture Mixer",
     "warning": "",
     "doc_url": "https://github.com/CandraAP/texture_mixer",
@@ -57,16 +58,14 @@ def register():
     tm_property.need_to_register()
     tm_operators.need_to_register()
     tm_ui.need_to_register()
-    Debug.LogSuper("Addon registered successfully!")
-    print()
+    print("Texture Mixer Addon registered successfully!")
 #-------------------------------------------------
 def unregister():     
     tm_ui.need_to_unregister()
     tm_operators.need_to_unregister()
     tm_property.need_to_unregister()
     tm_icon.need_to_unregister()
-    Debug.LogSuper("Addon unregistered successfully!")
-    print()
+    print("Texture Mixer Addon unregistered successfully!")
 #-------------------------------------------------
 if __name__ == "__main__":
     register()
