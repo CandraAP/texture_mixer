@@ -638,42 +638,26 @@ def TM_Logic_Layer_Link_Disconnect_All_Sockets(context, target_manager_id: str) 
         current_layer_node = TM_Logic_ShaderNode_Get_By_Id(host_material, current_layer.m_shader_node_system_layer_id)
         if not current_layer_node:
             return False   
+        
+        TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Input Alpha Tetangga", True)      
+        TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Input Base Color", True)
+        TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Input Metallic", True)
+        TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Input Roughness", True)
+        TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Input Alpha", True)
+        TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Input Bump", True)
+        TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Input Normal", True)
+        TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Input Emission", True)
+        
+        TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Output Alpha Tetangga", False)      
+        TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Output Base Color", False)
+        TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Output Metallic", False)
+        TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Output Roughness", False)
+        TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Output Alpha", False)
+        TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Output Bump", False)
+        TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Output Normal", False)
+        TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Output Emission", False)
 
-        if current_layer.m_type != 'GROUP':       
-            TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Input Alpha Tetangga", True)      
-            TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Input Base Color", True)
-            TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Input Metallic", True)
-            TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Input Roughness", True)
-            TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Input Alpha", True)
-            TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Input Bump", True)
-            TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Input Normal", True)
-            TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Input Emission", True)
-            
-            TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Output Alpha Tetangga", False)      
-            TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Output Base Color", False)
-            TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Output Metallic", False)
-            TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Output Roughness", False)
-            TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Output Alpha", False)
-            TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Output Bump", False)
-            TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Output Normal", False)
-            TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Output Emission", False)
-        else:                
-            TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Input Base Color", True)
-            TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Input Metallic", True)
-            TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Input Roughness", True)
-            TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Input Alpha", True)
-            TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Input Bump", True)
-            TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Input Normal", True)
-            TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Input Emission", True)
-            
-            TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Managed Base Color", True)
-            TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Managed Metallic", True)
-            TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Managed Roughness", True)
-            TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Managed Alpha", True)
-            TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Managed Bump", True)
-            TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Managed Normal", True)
-            TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Managed Emission", True)
-               
+        if current_layer.m_type == 'GROUP':                 
             TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Output Base Color", False)
             TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Output Metallic", False)
             TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Output Roughness", False)
@@ -790,6 +774,9 @@ def TM_Logic_Layer_Link_Reconnect_All_Sockets(context, target_manager_id: str) -
                 
                 TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Managed Alpha", True)
                 current_layer_node.inputs["Managed Alpha"].default_value = 0.0
+            else:            
+                if current_layer.m_group_id:
+                    TM_Logic_ShaderNode_Socket_Disconnector(host_material, current_layer_node,"Input Alpha", True)
 
             if current_layer.m_type == 'LAYER_PAINTABLE':
                 if layer_index != last_index:
@@ -811,14 +798,7 @@ def TM_Logic_Layer_Link_Reconnect_All_Sockets(context, target_manager_id: str) -
         else:
             if upper_layer.m_type == 'GROUP':
                 if current_layer.m_type == 'GROUP':                   
-                    TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Base Color", "Managed Base Color") # -X-
-                    TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Metallic", "Managed Metallic") # -X-
-                    TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Roughness", "Managed Roughness") # -X-
-                    TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Alpha", "Managed Alpha") # -X-
-                    TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Bump", "Managed Bump") # -X-
-                    TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Normal", "Managed Normal") # -X-
-                    TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Emission", "Managed Emission") # -X-
-
+                    TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Alpha Tetangga", "Input Alpha Tetangga") 
                     TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Base Color", "Input Base Color")
                     TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Metallic", "Input Metallic")
                     TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Roughness", "Input Roughness")
@@ -827,7 +807,8 @@ def TM_Logic_Layer_Link_Reconnect_All_Sockets(context, target_manager_id: str) -
                     TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Normal", "Input Normal")
                     TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Emission", "Input Emission")                                    
                 else:
-                    if upper_layer.m_id == current_layer.m_group_id:       
+                    if upper_layer.m_id == current_layer.m_group_id:    
+                        TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Alpha Tetangga", "Input Alpha Tetangga")    
                         TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Base Color", "Managed Base Color")
                         TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Metallic", "Managed Metallic")
                         TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Roughness", "Managed Roughness")
@@ -836,14 +817,7 @@ def TM_Logic_Layer_Link_Reconnect_All_Sockets(context, target_manager_id: str) -
                         TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Normal", "Managed Normal")
                         TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Emission", "Managed Emission")
                     else:
-                        TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Base Color", "Managed Base Color") # -X-
-                        TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Metallic", "Managed Metallic") # -X-
-                        TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Roughness", "Managed Roughness") # -X-
-                        TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Alpha", "Managed Alpha") # -X-
-                        TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Bump", "Managed Bump") # -X-
-                        TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Normal", "Managed Normal") # -X-
-                        TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Emission", "Managed Emission") # -X-
-
+                        TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Alpha Tetangga", "Input Alpha Tetangga") 
                         TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Base Color", "Input Base Color")
                         TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Metallic", "Input Metallic")
                         TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Roughness", "Input Roughness")
@@ -853,6 +827,7 @@ def TM_Logic_Layer_Link_Reconnect_All_Sockets(context, target_manager_id: str) -
                         TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Emission", "Input Emission")  
             else:
                 if current_layer.m_type == 'GROUP':         
+                    TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Alpha Tetangga", "Input Alpha Tetangga") 
                     TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Base Color", "Input Base Color")
                     TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Metallic", "Input Metallic")
                     TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Roughness", "Input Roughness")
@@ -864,15 +839,6 @@ def TM_Logic_Layer_Link_Reconnect_All_Sockets(context, target_manager_id: str) -
                     if upper_layer.m_group_id and upper_layer.m_group_id != current_layer.m_group_id:
                         target_group = TM_Logic_Layer_Get_By_Id(context, target_manager.m_id, upper_layer.m_group_id)
                         target_group_node = TM_Logic_ShaderNode_Get_By_Id(host_material, target_group.m_shader_node_system_layer_id) 
-                        
-                        TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Alpha Tetangga", "Input Alpha Tetangga") # -X-
-                        TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Base Color", "Input Base Color") # -X-
-                        TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Metallic", "Input Metallic") # -X-
-                        TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Roughness", "Input Roughness") # -X-
-                        TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Alpha", "Input Alpha") # -X-
-                        TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Bump", "Input Bump") # -X-
-                        TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Normal", "Input Normal") # -X-
-                        TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, upper_layer_node,"Output Emission", "Input Emission") # -X-
 
                         TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, target_group_node,"Output Alpha Tetangga", "Input Alpha Tetangga")
                         TM_Logic_ShaderNode_Socket_Linker(host_material, current_layer_node, target_group_node,"Output Base Color", "Input Base Color")
