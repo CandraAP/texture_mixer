@@ -1,4 +1,23 @@
 # Changelog
+
+---
+
+## [0.1.2-alpha] - rc
+### Added
+- None
+
+### Fixed
+- Fix bake-export wrong output resolution.
+
+### Changed
+- None
+
+### Removed
+- None
+
+### Known Issues
+- ## [0.1.1-alpha]
+
 ---
 
 ## [0.1.1-alpha] - 2026-02-12

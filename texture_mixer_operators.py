@@ -1923,7 +1923,7 @@ class TM_OT_Export_Bake(bpy.types.Operator):
             self.CleanUp(context)  
             return {'CANCELLED'}
                         
-        self.m_export_resolution   = tm_logic.TM_Logic_Utility_Get_Resolution_From_Preset(self.m_active_manager.m_preserved_resolution)
+        self.m_export_resolution   = tm_logic.TM_Logic_Utility_Get_Resolution_From_Preset(self.m_active_manager.m_output_resolution)
         #endregion [Init]
 
         export_path = self.m_active_manager.m_data.m_export_save_file_path
