@@ -26,6 +26,7 @@ paths_exclude_pattern = [
     "/.git/",
     "/.do_not_include_me/",
     "/dev_tools/",
+    "/videos/",
     "texture_mixer_project_builder_*.bat",
     ".gitignore",
 
