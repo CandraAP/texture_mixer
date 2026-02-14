@@ -1,7 +1,7 @@
 schema_version = "1.0.0"
 
 id          = "texture_mixer"
-version     = "0.1.1"
+version     = "0.1.2"
 name        = "Texture Mixer"
 tagline     = "Layer-based PBR mixing and texture management"
 maintainer  = "Candra Agung Prasetyo <yuyevon777@gmail.com>"

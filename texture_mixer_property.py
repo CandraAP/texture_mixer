@@ -47,7 +47,7 @@ class Addon_Data():
     #-------------------------------------------------
     m_addon_name                    = "Texture Mixer"
     m_addon_descriptions            = "Texturing tools addon for Blender"
-    m_addon_version                 = "0.1.1"
+    m_addon_version                 = "0.1.2"
     m_addon_status                  = "-ALPHA"
     #-------------------------------------------------
     m_addon_id_stamp                = f"texture_mixer_property_id"
