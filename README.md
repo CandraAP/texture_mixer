@@ -74,7 +74,7 @@ If you find this tool useful and want to support its development, consider becom
 | :--- | :--- |
 | **Initialization** <br> Setup the layer manager for your mesh. | <video src="https://github.com/user-attachments/assets/58f73bd1-b1ab-4397-bd32-ceeeec39ea09" width="400" autoplay loop muted playsinline></video> |
 | **Channel Management** <br> Quickly toggle PBR channels. | <video src="https://github.com/user-attachments/assets/23ce6535-9b23-4907-a24c-15f463ac95bf" width="400" autoplay loop muted playsinline></video> |
-| **Fill Layers** <br> Create and configure procedural layers. | <video src="https://github.com/user-attachments/assets/dbba0f20-f746-48fc-8ece-ba9688573ac2" width="400" autoplay loop muted playsinline></video> <br> <video src="https://github.com/user-attachments/assets/f00e3041-fb9b-4d1d-8939-6ee2427bca7a" width="400" autoplay loop muted playsinline></video> |
+| **Fill Layers** <br> Create and configure procedural layers. | <video src="https://github.com/user-attachments/assets/a9b046a2-0d8a-48e2-a387-7d5c7bc3a886" width="400" autoplay loop muted playsinline></video> |
 | **Masking System** <br> Create and setup dynamic masks. | <video src="https://github.com/user-attachments/assets/2e75593a-652a-46fd-9ca3-b75c24144766" width="400" autoplay loop muted playsinline></video> |
 | **Multi-Channel Paint** <br> Paint multiple PBR slots at once. | <video src="https://github.com/user-attachments/assets/cedf4d05-931a-4c58-9dfd-ac505ed7b7ed" width="400" autoplay loop muted playsinline></video> |
 | **Baking & Export** <br> Flatten layers to texture maps. | <video src="https://github.com/user-attachments/assets/2353e849-2350-4ff0-99b3-df68511bb366" width="400" autoplay loop muted playsinline></video> |
